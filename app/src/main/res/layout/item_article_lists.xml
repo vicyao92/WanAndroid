@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="3dp"
+    android:layout_marginBottom="5dp"
+    android:layout_marginStart="5dp"
+    android:layout_marginEnd="5dp"
+    app:cardCornerRadius="5dp">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+        <RelativeLayout
+            android:id="@+id/rl_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/tv_author"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:textColor="@color/text_gray_dark"
+                android:textSize="@dimen/text_author"
+                tools:text="author"/>
+            <TextView
+                android:id="@+id/tv_update_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:textColor="@color/text_gray_dark"
+                android:textSize="@dimen/text_author"
+                tools:text="update time"/>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_middle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rl_title"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iv_img"
+                android:layout_width="120dp"
+                android:layout_height="80dp"
+                android:layout_marginRight="10dp"
+                android:background="@color/bg"
+                android:scaleType="centerCrop"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <TextView
+                    android:id="@+id/tv_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:includeFontPadding="false"
+                    android:maxLines="3"
+                    android:lineSpacingExtra="0dp"
+                android:layout_gravity="center"
+                    android:singleLine="false"
+                    android:textColor="@color/text_black"
+                    android:textSize="@dimen/text_content"
+                    tools:singleLine="true"
+                    tools:text="article title" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_chapter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ll_middle"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/tv_super_chapter_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_gray_light"
+                android:textSize="@dimen/text_notes"
+                tools:text="superChapterName" />
+
+            <FrameLayout
+                android:id="@+id/fl_dot"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="3dp">
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="2dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/bg_solid_round_color_bg_dark_radius_max" />
+
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/tv_chapter_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_gray_light"
+                android:textSize="@dimen/text_notes"
+                tools:text="chapterName" />
+        </LinearLayout>
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

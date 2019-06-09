@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">WanAndroid</string>
+    <string name="home">主页</string>
+    <string name="book_system">体系</string>
+    <string name="wechat">公众号</string>
+    <string name="project">项目</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
