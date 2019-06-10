@@ -1,7 +1,9 @@
 package com.vic.wanandroid;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
@@ -45,6 +47,12 @@ public class MainActivity extends BaseActivity {
         pagerList.add(new ChatFragment());
         viewPager.setAdapter(new MyFragmentPagerAdapter(getSupportFragmentManager(),pagerList));
         viewPager.setCurrentItem(0);
+        bottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                return true;
+            }
+        });
     }
 
 

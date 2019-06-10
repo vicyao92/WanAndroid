@@ -3,4 +3,5 @@
     <dimen name="text_notes">12sp</dimen>
     <dimen name="text_author">13sp</dimen>
     <dimen name="text_content">15sp</dimen>
+    <dimen name="bottom_nav_height">56dp</dimen>
 </resources>
