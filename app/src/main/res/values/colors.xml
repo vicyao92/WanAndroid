@@ -5,7 +5,7 @@
     <color name="colorPrimary">#2196F3</color>
     <color name="colorPrimaryDark">#00000000</color>
     <color name="colorAccent">#D81B60</color>
-    <color name="colorNormalState">#dbdbdb</color>
+    <color name="colorNormalState">#8a8a8a</color>
 
     <color name="text_gray_light">#999999</color>
     <color name="text_gray_dark">#666666</color>

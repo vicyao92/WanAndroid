@@ -146,7 +146,6 @@ public class HomeFragment extends BaseFragment {
                     @Override
                     public void onNext(BaseResultBean<HomeBean> baseResultBean) {
                         articleLists.addAll(baseResultBean.getData().getDatas());
-                        Log.d("page",page+"");
                         mAdapter.notifyDataSetChanged();
                         disposable.dispose();
                     }

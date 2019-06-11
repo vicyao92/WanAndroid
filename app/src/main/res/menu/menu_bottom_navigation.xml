@@ -3,18 +3,18 @@
     <item
         android:id="@+id/menu_home"
         android:checked="true"
-        android:icon="@drawable/home"
+        android:icon="@drawable/home_normal"
         android:title="@string/home"/>
     <item
         android:id="@+id/menu_book"
-        android:icon="@drawable/book"
+        android:icon="@drawable/book_normal"
         android:title="@string/book_system"/>
     <item
         android:id="@+id/menu_chat"
-        android:icon="@drawable/chat"
+        android:icon="@drawable/chat_normal"
         android:title="@string/wechat"/>
     <item
         android:id="@+id/menu_project"
-        android:icon="@drawable/project"
+        android:icon="@drawable/project_normal"
         android:title="@string/project"/>
 </menu>
