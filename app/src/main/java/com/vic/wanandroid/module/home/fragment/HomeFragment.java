@@ -2,12 +2,16 @@ package com.vic.wanandroid.module.home.fragment;
 
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -42,6 +46,8 @@ public class HomeFragment extends BaseFragment {
     View rootView;
     @BindView(R.id.article_list)
     RecyclerView rvArticles;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
     private Retrofit retrofit;
     private List<ArticleBean> articleLists = new ArrayList<>();
     private List<BannerBean> bannerBeanList = new ArrayList<>();
@@ -62,6 +68,7 @@ public class HomeFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         initBannerSetting();
         retrofit = new Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
@@ -129,6 +136,7 @@ public class HomeFragment extends BaseFragment {
         banner.setDelayTime(4000);
         //设置指示器位置（当banner模式中有指示器时）
         banner.setIndicatorGravity(BannerConfig.RIGHT);
+
     }
 
     private void requestArticleData(int page) {
@@ -197,4 +205,20 @@ public class HomeFragment extends BaseFragment {
         return rootView;
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.menu_toolbar_home, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        banner.stopAutoPlay();
+    }
 }

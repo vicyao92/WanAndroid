@@ -1,11 +1,17 @@
 package com.vic.wanandroid;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.vic.wanandroid.adapter.MyFragmentPagerAdapter;
 import com.vic.wanandroid.base.BaseActivity;
@@ -30,8 +36,7 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.drawer)
     DrawerLayout drawer;
     @BindView(R.id.bottom_navigation)
-    com.google.android.material.bottomnavigation.BottomNavigationView bottomNavigation;
-
+    BottomNavigationView bottomNavigation;
     private List<Fragment> pagerList = new ArrayList<>();
 
     @Override
@@ -39,13 +44,76 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-
         pagerList.add(new HomeFragment());
         pagerList.add(new BookFragment());
-        pagerList.add(new ProjectFragment());
         pagerList.add(new ChatFragment());
+        pagerList.add(new ProjectFragment());
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                switch (position) {
+                    case 0:
+                        bottomNavigation.setSelectedItemId(R.id.menu_home);
+                        break;
+                    case 1:
+                        bottomNavigation.setSelectedItemId(R.id.menu_book);
+                        break;
+                    case 2:
+                        bottomNavigation.setSelectedItemId(R.id.menu_chat);
+                        break;
+                    case 3:
+                        bottomNavigation.setSelectedItemId(R.id.menu_project);
+                        break;
+
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         viewPager.setAdapter(new MyFragmentPagerAdapter(getSupportFragmentManager(), pagerList));
         viewPager.setCurrentItem(0);
+
+        bottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.menu_home:
+                        viewPager.setCurrentItem(0);
+                        return true;
+                    case R.id.menu_book:
+                        viewPager.setCurrentItem(1);
+                        return true;
+                    case R.id.menu_chat:
+                        viewPager.setCurrentItem(2);
+                        return true;
+                    case R.id.menu_project:
+                        viewPager.setCurrentItem(3);
+                        return true;
+                }
+                return true;
+            }
+        });
+
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        int page = bottomNavigation.getSelectedItemId();
+        switch (page){
+            case R.id.menu_home:
+                getMenuInflater().inflate(R.menu.menu_toolbar_home, menu);
+                return true;
+            case R.id.menu_book:
+                break;
+        }
+        return true;
+    }
 }
