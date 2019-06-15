@@ -1,7 +1,10 @@
 package com.vic.wanandroid.module.home.fragment;
 
 
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -10,15 +13,20 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.vic.wanandroid.MainActivity;
 import com.vic.wanandroid.R;
 import com.vic.wanandroid.base.BaseFragment;
 import com.vic.wanandroid.base.BaseResultBean;
+import com.vic.wanandroid.base.WebActivity;
 import com.vic.wanandroid.http.ApiManage;
 import com.vic.wanandroid.module.home.adapter.HomeAdapter;
 import com.vic.wanandroid.module.home.bean.ArticleBean;
@@ -56,7 +64,6 @@ public class HomeFragment extends BaseFragment {
     private int page = 0;
     private HomeAdapter mAdapter;
     private Banner banner;
-    private Disposable disposable;
     private ApiManage apiService;
 
     @Override
@@ -68,7 +75,7 @@ public class HomeFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        initToolbar();
         initBannerSetting();
         retrofit = new Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
@@ -104,6 +111,7 @@ public class HomeFragment extends BaseFragment {
 
                     @Override
                     public void onError(Throwable e) {
+                        Log.d("RetrofitErrors",e.getMessage());
                         disposable.dispose();
                     }
 
@@ -114,11 +122,6 @@ public class HomeFragment extends BaseFragment {
                 });
 
         initRv();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
     }
 
     private void initBannerSetting() {
@@ -136,7 +139,6 @@ public class HomeFragment extends BaseFragment {
         banner.setDelayTime(4000);
         //设置指示器位置（当banner模式中有指示器时）
         banner.setIndicatorGravity(BannerConfig.RIGHT);
-
     }
 
     private void requestArticleData(int page) {
@@ -154,6 +156,7 @@ public class HomeFragment extends BaseFragment {
                     @Override
                     public void onNext(BaseResultBean<HomeBean> baseResultBean) {
                         articleLists.addAll(baseResultBean.getData().getDatas());
+                        Log.d("articles",articleLists.size()+"");
                         mAdapter.notifyDataSetChanged();
                         disposable.dispose();
                     }
@@ -172,8 +175,6 @@ public class HomeFragment extends BaseFragment {
 
     private void initBannerDatas(List<BannerBean> bannerBeans) {
         for (int i = 0; i < bannerBeans.size(); i++) {
-            /*bannerTitles.add(i,bannerBeans.get(i).getTitle());
-            bannerImages.add(i,bannerBeans.get(i).getImagePath());*/
             bannerTitles.add(bannerBeans.get(i).getTitle());
             bannerImages.add(bannerBeans.get(i).getImagePath());
         }
@@ -189,8 +190,27 @@ public class HomeFragment extends BaseFragment {
             mAdapter.loadMoreComplete();
         }, rvArticles);
         mAdapter.openLoadAnimation(BaseQuickAdapter.ALPHAIN);
+        mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                String targetUrl = articleLists.get(position).getLink().trim();
+                Intent intent = new Intent(getActivity(),WebActivity.class);
+                intent.putExtra("TargetAdress",targetUrl);
+                startActivity(intent);
+            }
+        });
         rvArticles.setLayoutManager(new LinearLayoutManager(getContext()));
         rvArticles.setAdapter(mAdapter);
+    }
+
+    private void initToolbar(){
+        setHasOptionsMenu(true);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        if (actionBar!=null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.drawable.menu);
+        }
     }
 
     @Override
@@ -213,12 +233,22 @@ public class HomeFragment extends BaseFragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
+        switch (item.getItemId()){
+            case android.R.id.home:
+                DrawerLayout drawerLayout = getActivity().findViewById(R.id.drawer);
+                drawerLayout.openDrawer(GravityCompat.START);
+                break;
+            case R.id.btn_search:
+                break;
+        }
+        return true;
     }
 
     @Override
     public void onPause() {
+        banner.isAutoPlay(false);
         super.onPause();
-        banner.stopAutoPlay();
     }
+
+
 }

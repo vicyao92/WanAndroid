@@ -10,11 +10,22 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import io.reactivex.disposables.Disposable;
+
 public class BaseFragment extends Fragment {
+    public Disposable disposable;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("test","Fragment start");
         return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    @Override
+    public void onDestroy() {
+        if (disposable!=null){
+            disposable.dispose();
+        }
+        super.onDestroy();
     }
 }

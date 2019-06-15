@@ -1,12 +1,11 @@
 package com.vic.wanandroid;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
@@ -104,16 +103,13 @@ public class MainActivity extends BaseActivity {
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        int page = bottomNavigation.getSelectedItemId();
-        switch (page){
-            case R.id.menu_home:
-                getMenuInflater().inflate(R.menu.menu_toolbar_home, menu);
-                return true;
-            case R.id.menu_book:
+/*    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.home:
+                drawer.openDrawer(GravityCompat.START);
                 break;
         }
         return true;
-    }
+    }*/
 }
