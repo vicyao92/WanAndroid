@@ -1,11 +1,9 @@
 package com.vic.wanandroid;
 
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
-import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
@@ -16,7 +14,7 @@ import com.vic.wanandroid.adapter.MyFragmentPagerAdapter;
 import com.vic.wanandroid.base.BaseActivity;
 import com.vic.wanandroid.fragment.BookFragment;
 import com.vic.wanandroid.fragment.ChatFragment;
-import com.vic.wanandroid.fragment.ProjectFragment;
+import com.vic.wanandroid.module.project.fragment.ProjectFragment;
 import com.vic.wanandroid.module.home.fragment.HomeFragment;
 
 import java.util.ArrayList;
@@ -103,13 +101,4 @@ public class MainActivity extends BaseActivity {
 
     }
 
-/*    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.home:
-                drawer.openDrawer(GravityCompat.START);
-                break;
-        }
-        return true;
-    }*/
 }

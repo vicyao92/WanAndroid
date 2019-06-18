@@ -10,10 +10,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.vic.wanandroid.http.HttpManage;
+
 import io.reactivex.disposables.Disposable;
 
 public class BaseFragment extends Fragment {
-    public Disposable disposable;
+    protected Disposable disposable;
+    protected View rootView;
+    protected HttpManage httpManage;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

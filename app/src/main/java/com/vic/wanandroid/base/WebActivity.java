@@ -29,7 +29,7 @@ public class WebActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web);
         ButterKnife.bind(this);
-
+        initToolbar();
         intent = getIntent();
         String url = intent.getStringExtra("TargetAdress");
         agentWeb = AgentWeb.with(this)
@@ -72,5 +72,6 @@ public class WebActivity extends BaseActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.drawable.back);
         }
+        toolbar.setOverflowIcon(getDrawable(R.drawable.ic_menu_overflow_setting_white));
     }
 }

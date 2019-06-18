@@ -15,7 +15,7 @@
         android:navigationIcon="@drawable/menu"
         app:titleTextColor="@color/text_toolbar_title"
         android:layout_height="?android:attr/actionBarSize"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:popupTheme="@style/OverflowMenuStyle"
         android:layout_gravity="top|start"
         style="@style/ToolBarStyle">
         <TextView

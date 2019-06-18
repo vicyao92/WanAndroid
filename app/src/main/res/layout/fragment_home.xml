@@ -12,6 +12,7 @@
         android:background="?attr/colorPrimary"
         android:layout_width="match_parent"
         android:navigationIcon="@drawable/menu"
+        android:fitsSystemWindows="true"
         app:titleTextColor="@color/text_toolbar_title"
         android:layout_height="?android:attr/actionBarSize"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"

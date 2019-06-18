@@ -2,7 +2,6 @@ package com.vic.wanandroid.module.home.fragment;
 
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,7 +21,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.vic.wanandroid.MainActivity;
 import com.vic.wanandroid.R;
 import com.vic.wanandroid.base.BaseFragment;
 import com.vic.wanandroid.base.BaseResultBean;
@@ -156,7 +154,6 @@ public class HomeFragment extends BaseFragment {
                     @Override
                     public void onNext(BaseResultBean<HomeBean> baseResultBean) {
                         articleLists.addAll(baseResultBean.getData().getDatas());
-                        Log.d("articles",articleLists.size()+"");
                         mAdapter.notifyDataSetChanged();
                         disposable.dispose();
                     }
@@ -181,7 +178,7 @@ public class HomeFragment extends BaseFragment {
     }
 
     private void initRv() {
-        mAdapter = new HomeAdapter(R.layout.item_article_lists, articleLists, getContext());
+        mAdapter = new HomeAdapter(R.layout.item_rv_articles, articleLists, getContext());
         mAdapter.addHeaderView(banner);
         mAdapter.setEnableLoadMore(false);
         mAdapter.setOnLoadMoreListener(() -> {

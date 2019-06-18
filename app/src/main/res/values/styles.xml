@@ -6,11 +6,30 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:statusBarColor">@color/colorPrimary</item>
     </style>
 
-    <style name="ToolBarStyle" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="ToolBarStyle" parent="AppTheme">
         <item name="colorPrimary">@color/text_toolbar</item>
         <item name="android:background">@color/colorPrimary</item>
         <item name="android:textColor">@color/text_toolbar</item>
+        <item name="android:textColorSecondary">@color/text_toolbar</item>
+        <item name="android:actionOverflowButtonStyle">@style/OverflowButtonStyle</item>
+        <item name="actionOverflowMenuStyle">@style/OverflowMenuStyle</item>
+        <item name="android:fitsSystemWindows">true</item>
+    </style>
+
+    <!--Toolbar Overflow style-->
+    <style name="OverflowButtonStyle" parent="Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:src">@drawable/ic_menu_overflow_setting_white</item>
+    </style>
+
+    <!--Toolbar popup style-->
+    <style name="OverflowMenuStyle" parent="Widget.AppCompat.Light.PopupMenu.Overflow">
+        <!--设置不覆盖锚点-->
+        <item name="overlapAnchor">false</item>
+        <item name="android:background">@android:color/black</item>
+        <item name="android:textColor">@android:color/white</item>
+
     </style>
 </resources>
