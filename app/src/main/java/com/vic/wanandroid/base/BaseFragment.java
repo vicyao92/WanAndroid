@@ -10,27 +10,35 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.vic.wanandroid.R;
 import com.vic.wanandroid.http.HttpManage;
 
+import butterknife.ButterKnife;
 import io.reactivex.disposables.Disposable;
 
-public class BaseFragment extends Fragment {
-    protected Disposable disposable;
+public abstract class BaseFragment extends Fragment {
+    /*protected Disposable disposable;*/
     protected View rootView;
     protected HttpManage httpManage;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.d("test","Fragment start");
-        return super.onCreateView(inflater, container, savedInstanceState);
+        //return super.onCreateView(inflater, container, savedInstanceState);
+        if (rootView == null) {
+            rootView = inflater.inflate(getResId(),container, false);
+        }
+        ButterKnife.bind(this, rootView);
+        return rootView;
     }
 
     @Override
     public void onDestroy() {
-        if (disposable!=null){
+/*        if (disposable!=null){
             disposable.dispose();
-        }
+        }*/
         super.onDestroy();
     }
+
+    public abstract int getResId();
 }

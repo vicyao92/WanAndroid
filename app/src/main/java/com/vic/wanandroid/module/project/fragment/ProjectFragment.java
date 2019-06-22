@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
@@ -17,6 +18,7 @@ import com.vic.wanandroid.R;
 import com.vic.wanandroid.adapter.MyFragmentPagerAdapter;
 import com.vic.wanandroid.base.BaseFragment;
 import com.vic.wanandroid.base.BaseResultBean;
+import com.vic.wanandroid.http.BaseObserver;
 import com.vic.wanandroid.http.HttpManage;
 import com.vic.wanandroid.module.project.bean.ProjectArticles;
 import com.vic.wanandroid.module.project.bean.ProjectChapter;
@@ -35,73 +37,57 @@ public class ProjectFragment extends BaseFragment {
     TabLayout tabProject;
     @BindView(R.id.vp_project)
     ViewPager vpProject;
+    private ProjectArticlesFragment articlesFragment;
     private List<Fragment> fragments = new ArrayList<>();
     private List<ProjectChapter> projectChapters = new ArrayList<>();
     public ProjectFragment() {
-    }
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        if (rootView == null) {
-            rootView = inflater.inflate(R.layout.fragment_project, container, false);
-        }
-        ButterKnife.bind(this, rootView);
-        return rootView;
     }
 
     @Override
     public void onStart() {
         super.onStart();
         httpManage = HttpManage.init(getContext());
-        httpManage.getProjectChapter(new Observer<BaseResultBean<List<ProjectChapter>>>() {
+        httpManage.getProjectChapter(new BaseObserver<List<ProjectChapter>>(getContext()) {
             @Override
-            public void onSubscribe(Disposable d) {
-                disposable = d;
-            }
-
-            @Override
-            public void onNext(BaseResultBean<List<ProjectChapter>> listBaseResultBean) {
-                projectChapters = listBaseResultBean.getData();
+            protected void onHandleSuccess(List<ProjectChapter> projectChaptersList) {
+                projectChapters = projectChaptersList;
                 initViewPager(projectChapters);
                 initTab(projectChapters);
-                disposable.dispose();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                disposable.dispose();
-            }
-
-            @Override
-            public void onComplete() {
-
             }
         });
     }
 
     private void initTab(List<ProjectChapter> datas) {
         tabProject.setupWithViewPager(vpProject);
-        for (int i =0;i<projectChapters.size();i++){
-            tabProject.addTab(tabProject.newTab());
-            tabProject.getTabAt(i).setText(projectChapters.get(i).getName());
+        for (int i =0;i<datas.size();i++){
+            tabProject.getTabAt(i).setText(datas.get(i).getName());
         }
+        Log.d("module_project",tabProject.getTabCount()+"");
         //tabProject.addOnTabSelectedListener(tabSelectedListener);
     }
 
     private void initViewPager(List<ProjectChapter> datas) {
         int cid;
-        for (int i =0;i<projectChapters.size();i++){
-            cid = projectChapters.get(i).getId();
-            fragments.add(new ProjectArticlesFragment(cid));
+        if (fragments.size() == 0){
+            for (int i =0;i<projectChapters.size();i++){
+                cid = projectChapters.get(i).getId();
+                articlesFragment = new ProjectArticlesFragment(cid);
+                fragments.add(articlesFragment);
+            }
+            vpProject.setAdapter(new MyFragmentPagerAdapter(getActivity().getSupportFragmentManager(),fragments));
+            vpProject.setCurrentItem(0);
         }
-        vpProject.setAdapter(new MyFragmentPagerAdapter(getActivity().getSupportFragmentManager(),fragments));
-        vpProject.setCurrentItem(0);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         //tabProject.removeOnTabSelectedListener(tabSelectedListener);
+    }
+
+    @Override
+    public int getResId() {
+        return R.layout.fragment_project;
     }
 
 }

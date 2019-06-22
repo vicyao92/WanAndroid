@@ -3,21 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@color/bg"
     tools:context=".module.home.fragment.HomeFragment">
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:background="?attr/colorPrimary"
-        android:layout_width="match_parent"
-        android:navigationIcon="@drawable/menu"
-        android:fitsSystemWindows="true"
-        app:titleTextColor="@color/text_toolbar_title"
-        android:layout_height="?android:attr/actionBarSize"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        android:layout_gravity="top|start"
-        style="@style/ToolBarStyle"/>
+    <include layout="@layout/toolbar_layout" />
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/article_list"
         android:layout_width="match_parent"

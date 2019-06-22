@@ -1,16 +1,13 @@
-package com.vic.wanandroid.module.project.fragment;
+package com.vic.wanandroid.module.chat.fragment;
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,9 +22,9 @@ import com.vic.wanandroid.base.BaseResultBean;
 import com.vic.wanandroid.base.WebActivity;
 import com.vic.wanandroid.http.BaseObserver;
 import com.vic.wanandroid.http.HttpManage;
+import com.vic.wanandroid.module.chat.bean.ChatArticlesBean;
 import com.vic.wanandroid.module.home.adapter.HomeAdapter;
 import com.vic.wanandroid.module.home.bean.ArticleBean;
-import com.vic.wanandroid.module.home.bean.HomeBean;
 import com.vic.wanandroid.module.project.bean.ProjectArticles;
 
 import java.util.ArrayList;
@@ -36,30 +33,30 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ProjectArticlesFragment extends BaseFragment {
-    @BindView(R.id.rv_project_articles)
-    RecyclerView rvProjectArticles;
+public class ChatArticlesFragment extends BaseFragment {
+
+    @BindView(R.id.rv_chat_articles)
+    RecyclerView rvChatArticles;
     @BindView(R.id.refresh)
     SmartRefreshLayout refresh;
-    private List<ArticleBean> articleDatas = new ArrayList<>();
-    private ProjectArticles projectArticles;
-    private int cid;
+    private int id;
     private int currentPage = 1;
+    private List<ArticleBean> articleDatas = new ArrayList<>();
+    private ChatArticlesBean chatArticles;
     private HomeAdapter mAdapter;
-    public ProjectArticlesFragment(int cid) {
-        this.cid = cid;
+
+    public ChatArticlesFragment(int id) {
+        this.id = id;
     }
 
     @Override
     public int getResId() {
-        return R.layout.fragment_project_articles;
+        return R.layout.fragment_chat_articles;
     }
 
     @Override
@@ -71,14 +68,14 @@ public class ProjectArticlesFragment extends BaseFragment {
     }
 
     private void requestArticleData(int page) {
-        httpManage.getProjectArticles(new BaseObserver<ProjectArticles>(getContext()) {
+        httpManage.getChatArticles(new BaseObserver<ChatArticlesBean>(getContext()) {
             @Override
-            protected void onHandleSuccess(ProjectArticles projectArticlesBean) {
-                projectArticles = projectArticlesBean;
-                loadMore(projectArticles);
-                articleDatas.addAll(projectArticles.getDatas());
+            protected void onHandleSuccess(ChatArticlesBean chatArticlesBean) {
+                chatArticles = chatArticlesBean;
+                loadMore(chatArticles);
+                articleDatas.addAll(chatArticles.getDatas());
             }
-        }, currentPage, cid);
+        }, id, currentPage);
     }
 
     private void initRv() {
@@ -90,25 +87,26 @@ public class ProjectArticlesFragment extends BaseFragment {
                 WebActivity.start(getContext(),articleDatas.get(position).getTitle(),targetUrl);
             }
         });
-        rvProjectArticles.setLayoutManager(new LinearLayoutManager(getContext()));
-        rvProjectArticles.setAdapter(mAdapter);
+        rvChatArticles.setLayoutManager(new LinearLayoutManager(getContext()));
+        rvChatArticles.setAdapter(mAdapter);
     }
 
-    private void loadMore(ProjectArticles projectArticles){
-        if (currentPage == 1){
-            mAdapter.setNewData(projectArticles.getDatas());
+    private void loadMore(ChatArticlesBean chatArticles) {
+        if (currentPage == 1) {
+            mAdapter.setNewData(chatArticles.getDatas());
         }
-        if (projectArticles.isOver()){
+        if (chatArticles.isOver()) {
             mAdapter.loadMoreEnd();
-        }else {
-            mAdapter.addData(projectArticles.getDatas());
+        } else {
+            mAdapter.addData(chatArticles.getDatas());
             mAdapter.setEnableLoadMore(false);
             mAdapter.setOnLoadMoreListener(() -> {
                 currentPage += 1;
                 requestArticleData(currentPage);
                 mAdapter.loadMoreComplete();
-            }, rvProjectArticles);
+            }, rvChatArticles);
             mAdapter.openLoadAnimation(BaseQuickAdapter.ALPHAIN);
         }
     }
+
 }

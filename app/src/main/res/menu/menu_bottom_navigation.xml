@@ -6,9 +6,13 @@
         android:icon="@drawable/home_normal"
         android:title="@string/home"/>
     <item
-        android:id="@+id/menu_book"
-        android:icon="@drawable/book_normal"
+        android:id="@+id/menu_knowledge"
+        android:icon="@drawable/knowledge_normal"
         android:title="@string/book_system"/>
+    <item
+        android:id="@+id/menu_navi"
+        android:icon="@drawable/navigate"
+        android:title="@string/navigate"/>
     <item
         android:id="@+id/menu_chat"
         android:icon="@drawable/chat_normal"

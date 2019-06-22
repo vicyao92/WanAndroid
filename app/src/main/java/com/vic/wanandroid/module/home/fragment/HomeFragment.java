@@ -91,7 +91,7 @@ public class HomeFragment extends BaseFragment {
                 .subscribe(new Observer<BaseResultBean<List<BannerBean>>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        disposable = d;
+                        /*disposable = d;*/
                     }
 
                     @Override
@@ -104,13 +104,13 @@ public class HomeFragment extends BaseFragment {
                         banner.setImages(bannerImages);
                         banner.start();
                         mAdapter.notifyDataSetChanged();
-                        disposable.dispose();
+                        /*disposable.dispose();*/
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.d("RetrofitErrors",e.getMessage());
-                        disposable.dispose();
+                       /* disposable.dispose();*/
                     }
 
                     @Override
@@ -191,9 +191,7 @@ public class HomeFragment extends BaseFragment {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 String targetUrl = articleLists.get(position).getLink().trim();
-                Intent intent = new Intent(getActivity(),WebActivity.class);
-                intent.putExtra("TargetAdress",targetUrl);
-                startActivity(intent);
+                WebActivity.start(getContext(),articleLists.get(position).getTitle(),targetUrl);
             }
         });
         rvArticles.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -211,15 +209,8 @@ public class HomeFragment extends BaseFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        if (rootView == null) {
-            rootView = inflater.inflate(R.layout.fragment_home, container, false);
-            //rootView = getRootView(inflater,container,R.layout.fragment_home);
-        }
-        ButterKnife.bind(this, rootView);
-        return rootView;
+    public int getResId() {
+        return R.layout.fragment_home;
     }
 
     @Override

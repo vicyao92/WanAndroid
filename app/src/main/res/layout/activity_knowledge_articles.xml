@@ -1,24 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".module.chat.fragment.ChatFragment">
-
+    tools:context=".module.knowledge.activity.KnowledgeArticlesActivity">
+    <include layout="@layout/toolbar_layout"/>
     <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tab_chat"
+        android:id="@+id/tab_knowledge_ariticle"
         android:background="@color/colorPrimary"
         app:tabMode="scrollable"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         app:tabTextColor="@color/text_normal"
         app:tabSelectedTextColor="@color/colorAccent"
         />
     <androidx.viewpager.widget.ViewPager
-        android:id="@+id/vp_chat"
+        android:id="@+id/vp_knowledge_article"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
 </LinearLayout>

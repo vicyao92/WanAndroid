@@ -1,16 +1,7 @@
 package com.vic.wanandroid.http;
 
 import android.content.Context;
-
-import com.vic.wanandroid.base.BaseResultBean;
-import com.vic.wanandroid.module.project.bean.ProjectArticles;
-import com.vic.wanandroid.module.project.bean.ProjectChapter;
-
-import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import io.reactivex.Observable;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.OkHttpClient;
@@ -62,7 +53,7 @@ public class HttpManage {
      * 获取项目类别
      * @param observer
      */
-    public void getProjectChapter(Observer<BaseResultBean<List<ProjectChapter>>> observer){
+    public void getProjectChapter(BaseObserver observer){
         request.getProjectChapters()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -75,9 +66,68 @@ public class HttpManage {
      * @param page 当前页码
      * @param cid 项目类别
      */
-    public void getProjectArticles(Observer<BaseResultBean<ProjectArticles>> observer, int page, int cid){
+    public void getProjectArticles(BaseObserver observer, int page, int cid){
         request.getProjectArticles(page, cid)
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+    }
+
+    /**
+     * 获取公众号列表
+     * @param observer
+     */
+    public void getAccountBean(BaseObserver observer){
+        request.getAccountBean()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+    }
+
+    /**
+     * 获取指定ID公众号的文章
+     * @param observer
+     * @param id 公众号ID
+     * @param page 当前页数
+     */
+    public void getChatArticles(BaseObserver observer,int id,int page){
+        request.getChatArticles(id,page)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+    }
+
+    /**
+     * 获取导航列表
+     * @param observer
+     */
+    public void getNavigationList(BaseObserver observer){
+        request.getNavigationList()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+    }
+
+    /**
+     * 获取知识体系列表
+     * @param observer
+     */
+    public void getKnowledgeSystem(BaseObserver observer){
+        request.getKnowledgeSystem()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+    }
+
+    /**
+     * 获取知识体系相应文章
+     * @param observer
+     * @param page
+     * @param cid
+     */
+    public void getKnowledgeArticle(BaseObserver observer,int page,int cid){
+        request.getKnowledgeArticle(page,cid)
+                .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(observer);
     }

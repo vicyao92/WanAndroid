@@ -11,10 +11,10 @@ import io.reactivex.disposables.Disposable;
 public abstract class BaseObserver<T> implements Observer<BaseResultBean<T>> {
 
     private Disposable disposable;
-
+    private Context context;
     //默认无效果的请求
-    protected BaseObserver() {
-
+    protected BaseObserver(Context mContext) {
+        this.context = mContext;
     }
 
     //带进度条的请求
@@ -68,6 +68,6 @@ public abstract class BaseObserver<T> implements Observer<BaseResultBean<T>> {
     protected abstract void onHandleSuccess(T t);
 
     protected void onHandleError(String msg) {
-        //Toast.makeText(mContext, msg, Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
     }
 }

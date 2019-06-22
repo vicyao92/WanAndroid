@@ -12,8 +12,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.vic.wanandroid.adapter.MyFragmentPagerAdapter;
 import com.vic.wanandroid.base.BaseActivity;
-import com.vic.wanandroid.fragment.BookFragment;
-import com.vic.wanandroid.fragment.ChatFragment;
+import com.vic.wanandroid.module.chat.fragment.ChatFragment;
+import com.vic.wanandroid.module.knowledge.fragment.KnowledgeChildFragment;
+import com.vic.wanandroid.module.navigate.fragment.NavigationFragment;
 import com.vic.wanandroid.module.project.fragment.ProjectFragment;
 import com.vic.wanandroid.module.home.fragment.HomeFragment;
 
@@ -42,7 +43,8 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         pagerList.add(new HomeFragment());
-        pagerList.add(new BookFragment());
+        pagerList.add(new KnowledgeChildFragment());
+        pagerList.add(new NavigationFragment());
         pagerList.add(new ChatFragment());
         pagerList.add(new ProjectFragment());
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -58,12 +60,15 @@ public class MainActivity extends BaseActivity {
                         bottomNavigation.setSelectedItemId(R.id.menu_home);
                         break;
                     case 1:
-                        bottomNavigation.setSelectedItemId(R.id.menu_book);
+                        bottomNavigation.setSelectedItemId(R.id.menu_knowledge);
                         break;
                     case 2:
-                        bottomNavigation.setSelectedItemId(R.id.menu_chat);
+                        bottomNavigation.setSelectedItemId(R.id.menu_navi);
                         break;
                     case 3:
+                        bottomNavigation.setSelectedItemId(R.id.menu_chat);
+                        break;
+                    case 4:
                         bottomNavigation.setSelectedItemId(R.id.menu_project);
                         break;
 
@@ -85,14 +90,17 @@ public class MainActivity extends BaseActivity {
                     case R.id.menu_home:
                         viewPager.setCurrentItem(0);
                         return true;
-                    case R.id.menu_book:
+                    case R.id.menu_knowledge:
                         viewPager.setCurrentItem(1);
                         return true;
-                    case R.id.menu_chat:
+                    case R.id.menu_navi:
                         viewPager.setCurrentItem(2);
                         return true;
-                    case R.id.menu_project:
+                    case R.id.menu_chat:
                         viewPager.setCurrentItem(3);
+                        return true;
+                    case R.id.menu_project:
+                        viewPager.setCurrentItem(4);
                         return true;
                 }
                 return true;
