@@ -12,7 +12,6 @@ public abstract class BaseObserver<T> implements Observer<BaseResultBean<T>> {
 
     private Disposable disposable;
     private Context context;
-    //默认无效果的请求
     protected BaseObserver(Context mContext) {
         this.context = mContext;
     }

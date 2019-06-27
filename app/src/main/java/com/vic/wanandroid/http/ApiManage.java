@@ -1,6 +1,7 @@
 package com.vic.wanandroid.http;
 
 import com.vic.wanandroid.base.BaseResultBean;
+import com.vic.wanandroid.module.account.bean.LoginBean;
 import com.vic.wanandroid.module.chat.bean.AccountBean;
 import com.vic.wanandroid.module.chat.bean.ChatArticlesBean;
 import com.vic.wanandroid.module.home.bean.BannerBean;
@@ -14,7 +15,10 @@ import com.vic.wanandroid.module.project.bean.ProjectChapter;
 import java.util.List;
 
 import io.reactivex.Observable;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -76,4 +80,13 @@ public interface ApiManage {
 
     @GET("article/list/{page}/json")
     Observable<BaseResultBean<KnowledgeArticleBean>> getKnowledgeArticle(@Path("page") int page,@Query("cid") int cid);
+
+    @FormUrlEncoded
+    @POST("user/login")
+    Observable<BaseResultBean<LoginBean>> login(@Field("username") String username,
+                                                @Field("password") String password);
+
+    @GET("user/register")
+    Observable<BaseResultBean<LoginBean>> register(@Field("username") String username
+            ,@Field("password") String password,@Field("repassword") String repassword);
 }

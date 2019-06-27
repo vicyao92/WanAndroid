@@ -12,14 +12,17 @@
 
     <application
         android:allowBackup="false"
+        android:name=".base.MyApp"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".module.knowledge.activity.KnowledgeArticlesActivity"></activity>
+        <activity android:name=".module.account.LoginActivity"></activity>
+        <activity android:name=".module.knowledge.activity.KnowledgeArticlesActivity" />
         <activity android:name=".base.WebActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

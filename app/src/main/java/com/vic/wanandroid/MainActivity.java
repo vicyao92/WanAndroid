@@ -2,6 +2,7 @@ package com.vic.wanandroid;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -12,6 +13,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.vic.wanandroid.adapter.MyFragmentPagerAdapter;
 import com.vic.wanandroid.base.BaseActivity;
+import com.vic.wanandroid.module.account.LoginActivity;
 import com.vic.wanandroid.module.chat.fragment.ChatFragment;
 import com.vic.wanandroid.module.knowledge.fragment.KnowledgeChildFragment;
 import com.vic.wanandroid.module.navigate.fragment.NavigationFragment;
@@ -23,12 +25,12 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends BaseActivity {
 
     @BindView(R.id.view_pager)
     ViewPager viewPager;
-
     @BindView(R.id.navigation)
     NavigationView navigation;
     @BindView(R.id.drawer)
@@ -82,7 +84,6 @@ public class MainActivity extends BaseActivity {
         });
         viewPager.setAdapter(new MyFragmentPagerAdapter(getSupportFragmentManager(), pagerList));
         viewPager.setCurrentItem(0);
-
         bottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -107,6 +108,14 @@ public class MainActivity extends BaseActivity {
             }
         });
 
+        View headerView = navigation.inflateHeaderView(R.layout.nav_header);
+        CircleImageView avatar = headerView.findViewById(R.id.img_avatar);
+        avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LoginActivity.start(MainActivity.this);
+            }
+        });
     }
 
 }
