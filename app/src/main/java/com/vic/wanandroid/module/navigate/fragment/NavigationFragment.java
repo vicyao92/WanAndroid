@@ -1,6 +1,9 @@
 package com.vic.wanandroid.module.navigate.fragment;
 
 
+import android.os.Bundle;
+
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -51,20 +54,21 @@ public class NavigationFragment extends BaseFragment {
             protected void onHandleSuccess(List<NavigationBean> navigationBeans) {
                 navigations = navigationBeans;
                 adapter.setNewData(navigations);
-                adapter.setOnItemClickListener(new NavigationAdapter.OnItemClickListener() {
-                    @Override
-                    public void onClick(NavigationBean bean, int pos) {
-                        String title = bean.getArticles().get(pos).getTitle();
-                        String url = bean.getArticles().get(pos).getLink();
-                        WebActivity.start(getActivity(),title,url);
-                    }
-                });
+                adapter.loadMoreEnd();
             }
         });
     }
 
     private void initRv() {
         adapter = new NavigationAdapter(R.layout.item_rv_knowledge_child, navigations);
+        adapter.setOnItemClickListener(new NavigationAdapter.OnItemClickListener() {
+            @Override
+             public void onClick(NavigationBean bean, int pos) {
+                String title = bean.getArticles().get(pos).getTitle();
+                String url = bean.getArticles().get(pos).getLink();
+                WebActivity.start(getActivity(),title,url);
+            }
+        });
         rvKnowledgeChild.setLayoutManager(new LinearLayoutManager(getContext()));
         rvKnowledgeChild.setAdapter(adapter);
     }

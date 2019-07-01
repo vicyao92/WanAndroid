@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,6 +25,7 @@ import com.vic.wanandroid.http.BaseObserver;
 import com.vic.wanandroid.http.HttpManage;
 import com.vic.wanandroid.module.home.bean.ArticleBean;
 import com.vic.wanandroid.module.knowledge.adapter.KnowledgeArticleAdapter;
+import com.vic.wanandroid.module.knowledge.bean.ChildrenBean;
 import com.vic.wanandroid.module.knowledge.bean.KnowledgeArticleBean;
 import com.vic.wanandroid.module.knowledge.bean.KnowledgeSystemBean;
 import com.vic.wanandroid.module.project.bean.ProjectArticles;
@@ -46,11 +48,11 @@ public class KnowledgeArticleFragment extends BaseFragment {
     @BindView(R.id.refresh)
     SmartRefreshLayout refresh;
     private List<ArticleBean> articles = new ArrayList<>();
-    private List<KnowledgeSystemBean.ChildrenBean> children = new ArrayList<>();
     private KnowledgeArticleAdapter adapter;
     private static final int START_PAGE = 0;
     private int currentPage = START_PAGE;
     private int cid;
+    private boolean isOver;
     public KnowledgeArticleFragment(int cid) {
         this.cid = cid;
     }
@@ -61,21 +63,36 @@ public class KnowledgeArticleFragment extends BaseFragment {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        httpManage = HttpManage.init(getContext());
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        initRv();
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
-        httpManage = HttpManage.init(getContext());
         requestDataFromWeb(currentPage,cid);
-        initRv();
     }
 
     private void initRv() {
         adapter = new KnowledgeArticleAdapter(R.layout.item_rv_articles,articles);
-        adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                WebActivity.start(getContext(),articles.get(position).getTitle(),articles.get(position).getLink());
+        adapter.setOnItemClickListener((adapter, view, position) -> WebActivity.start(getContext()
+                ,articles.get(position).getTitle(),articles.get(position).getLink()));
+        adapter.openLoadAnimation(BaseQuickAdapter.ALPHAIN);
+        adapter.setEnableLoadMore(true);
+        adapter.setOnLoadMoreListener(() -> {
+            if (isOver){
+                adapter.loadMoreEnd();
+            }else {
+                requestDataFromWeb(currentPage,cid);
             }
-        });
+        }, rvKnowledgeArticles);
         rvKnowledgeArticles.setLayoutManager(new LinearLayoutManager(getContext()));
         rvKnowledgeArticles.setAdapter(adapter);
     }
@@ -84,28 +101,17 @@ public class KnowledgeArticleFragment extends BaseFragment {
         httpManage.getKnowledgeArticle(new BaseObserver<KnowledgeArticleBean>(getContext()) {
             @Override
             protected void onHandleSuccess(KnowledgeArticleBean knowledgeArticleBean) {
-                loadMore(knowledgeArticleBean);
                 articles = knowledgeArticleBean.getDatas();
+                isOver = knowledgeArticleBean.isOver();
+                if (currentPage == START_PAGE){
+                    adapter.setNewData(articles);
+                }else {
+                    adapter.addData(articles);
+                }
+                currentPage += 1;
+                adapter.loadMoreComplete();
             }
-
         },page,cid);
     }
 
-    private void loadMore(KnowledgeArticleBean knowledgeArticleBean){
-        if (currentPage == 0){
-            adapter.setNewData(knowledgeArticleBean.getDatas());
-        }
-        if (knowledgeArticleBean.isOver()){
-            adapter.loadMoreEnd();
-        }else {
-            adapter.addData(knowledgeArticleBean.getDatas());
-            adapter.setEnableLoadMore(false);
-            adapter.setOnLoadMoreListener(() -> {
-                currentPage += 1;
-                requestDataFromWeb(currentPage,cid);
-                adapter.loadMoreComplete();
-            }, rvKnowledgeArticles);
-            adapter.openLoadAnimation(BaseQuickAdapter.ALPHAIN);
-        }
-    }
 }

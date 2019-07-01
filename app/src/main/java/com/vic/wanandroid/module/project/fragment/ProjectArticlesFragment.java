@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -49,10 +50,11 @@ public class ProjectArticlesFragment extends BaseFragment {
     @BindView(R.id.refresh)
     SmartRefreshLayout refresh;
     private List<ArticleBean> articleDatas = new ArrayList<>();
-    private ProjectArticles projectArticles;
     private int cid;
-    private int currentPage = 1;
+    private final int PAGE_START = 1;
+    private int currentPage = PAGE_START;
     private HomeAdapter mAdapter;
+    private boolean isOver;
     public ProjectArticlesFragment(int cid) {
         this.cid = cid;
     }
@@ -63,9 +65,14 @@ public class ProjectArticlesFragment extends BaseFragment {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        httpManage = HttpManage.init(getContext());
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
-        httpManage = HttpManage.init(getContext());
         requestArticleData(currentPage);
         initRv();
     }
@@ -74,9 +81,15 @@ public class ProjectArticlesFragment extends BaseFragment {
         httpManage.getProjectArticles(new BaseObserver<ProjectArticles>(getContext()) {
             @Override
             protected void onHandleSuccess(ProjectArticles projectArticlesBean) {
-                projectArticles = projectArticlesBean;
-                loadMore(projectArticles);
-                articleDatas.addAll(projectArticles.getDatas());
+                isOver = projectArticlesBean.isOver();
+                articleDatas.addAll(projectArticlesBean.getDatas());
+                if (currentPage == PAGE_START){
+                    mAdapter.setNewData(projectArticlesBean.getDatas());
+                }else {
+                    mAdapter.addData(projectArticlesBean.getDatas());
+                }
+                currentPage += 1;
+                mAdapter.loadMoreComplete();
             }
         }, currentPage, cid);
     }
@@ -90,25 +103,18 @@ public class ProjectArticlesFragment extends BaseFragment {
                 WebActivity.start(getContext(),articleDatas.get(position).getTitle(),targetUrl);
             }
         });
+        mAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
+            @Override
+            public void onLoadMoreRequested() {
+                if (isOver){
+                    mAdapter.loadMoreEnd();
+                }else {
+                    requestArticleData(currentPage);
+                }
+            }
+        },rvProjectArticles);
         rvProjectArticles.setLayoutManager(new LinearLayoutManager(getContext()));
         rvProjectArticles.setAdapter(mAdapter);
     }
 
-    private void loadMore(ProjectArticles projectArticles){
-        if (currentPage == 1){
-            mAdapter.setNewData(projectArticles.getDatas());
-        }
-        if (projectArticles.isOver()){
-            mAdapter.loadMoreEnd();
-        }else {
-            mAdapter.addData(projectArticles.getDatas());
-            mAdapter.setEnableLoadMore(false);
-            mAdapter.setOnLoadMoreListener(() -> {
-                currentPage += 1;
-                requestArticleData(currentPage);
-                mAdapter.loadMoreComplete();
-            }, rvProjectArticles);
-            mAdapter.openLoadAnimation(BaseQuickAdapter.ALPHAIN);
-        }
-    }
 }

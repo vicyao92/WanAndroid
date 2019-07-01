@@ -1,6 +1,6 @@
 package com.vic.wanandroid.module.home.bean;
 
-public class BannerBean {
+public class BannerBean{
 
     /**
      * desc : Android高级进阶直播课免费学习

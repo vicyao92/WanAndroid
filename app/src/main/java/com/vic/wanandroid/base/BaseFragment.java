@@ -1,5 +1,6 @@
 package com.vic.wanandroid.base;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,7 +25,6 @@ public abstract class BaseFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        //return super.onCreateView(inflater, container, savedInstanceState);
         if (rootView == null) {
             rootView = inflater.inflate(getResId(),container, false);
         }
@@ -34,11 +34,12 @@ public abstract class BaseFragment extends Fragment {
 
     @Override
     public void onDestroy() {
-/*        if (disposable!=null){
-            disposable.dispose();
-        }*/
         super.onDestroy();
     }
 
     public abstract int getResId();
+
+    public void logging(String msg){
+        Log.d("debugData",msg);
+    }
 }

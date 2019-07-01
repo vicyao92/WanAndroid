@@ -3,17 +3,14 @@ package com.vic.wanandroid.module.knowledge.bean;
 import java.io.Serializable;
 import java.util.List;
 
-import io.realm.annotations.PrimaryKey;
-
-public class KnowledgeSystemBean implements Serializable {
-
+public class ChildrenBean implements Serializable {
     /**
-     * children : [{"children":[],"courseId":13,"id":60,"name":"Android Studio相关","order":1000,"parentChapterId":150,"userControlSetTop":false,"visible":1},{"children":[],"courseId":13,"id":169,"name":"gradle","order":1001,"parentChapterId":150,"userControlSetTop":false,"visible":1},{"children":[],"courseId":13,"id":269,"name":"官方发布","order":1002,"parentChapterId":150,"userControlSetTop":false,"visible":1}]
+     * children : []
      * courseId : 13
-     * id : 150
-     * name : 开发环境
-     * order : 1
-     * parentChapterId : 0
+     * id : 60
+     * name : Android Studio相关
+     * order : 1000
+     * parentChapterId : 150
      * userControlSetTop : false
      * visible : 1
      */
@@ -25,7 +22,7 @@ public class KnowledgeSystemBean implements Serializable {
     private int parentChapterId;
     private boolean userControlSetTop;
     private int visible;
-    private List<ChildrenBean> children;
+    private List<?> children;
 
     public int getCourseId() {
         return courseId;
@@ -83,13 +80,11 @@ public class KnowledgeSystemBean implements Serializable {
         this.visible = visible;
     }
 
-    public List<ChildrenBean> getChildren() {
+    public List<?> getChildren() {
         return children;
     }
 
-    public void setChildren(List<ChildrenBean> children) {
+    public void setChildren(List<?> children) {
         this.children = children;
     }
-
-
 }

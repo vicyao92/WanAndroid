@@ -2,7 +2,7 @@ package com.vic.wanandroid.module.home.bean;
 
 import java.util.List;
 
-public class HomeBean {
+public class HomeBean{
 
     /**
      * curPage : 1
@@ -13,7 +13,6 @@ public class HomeBean {
      * size : 20
      * total : 6637
      */
-
     private int curPage;
     private int offset;
     private boolean over;

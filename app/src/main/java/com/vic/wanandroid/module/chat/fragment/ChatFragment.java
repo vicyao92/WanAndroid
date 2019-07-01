@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
@@ -50,9 +51,14 @@ public class ChatFragment extends BaseFragment {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        httpManage = HttpManage.init(getContext());
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
-        httpManage = HttpManage.init(getContext());
         httpManage.getAccountBean(new BaseObserver<List<AccountBean>>(getContext()) {
             @Override
             protected void onHandleSuccess(List<AccountBean> accountBeans) {

@@ -2,7 +2,7 @@ package com.vic.wanandroid.module.home.bean;
 
 import java.util.List;
 
-public class ArticleBean {
+public class ArticleBean{
     /**
      * apkLink :
      * author : 看书的小蜗牛

@@ -18,6 +18,7 @@ import com.vic.wanandroid.http.ApiManage;
 import com.vic.wanandroid.http.BaseObserver;
 import com.vic.wanandroid.http.HttpManage;
 import com.vic.wanandroid.module.account.bean.LoginBean;
+import com.vic.wanandroid.utils.DatabaseHelper;
 import com.vic.wanandroid.utils.LoginUtils;
 import com.vic.wanandroid.utils.SpUtils;
 
@@ -33,6 +34,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import io.realm.Realm;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -56,6 +58,7 @@ public class LoginActivity extends BaseActivity {
     @BindView(R.id.btn_submit)
     Button btnSubmit;
     private HttpManage httpManage;
+    private DatabaseHelper databaseHelper;
     public static void start(Context context) {
         Intent intent = new Intent(context, LoginActivity.class);
         context.startActivity(intent);
@@ -67,6 +70,7 @@ public class LoginActivity extends BaseActivity {
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
         httpManage = HttpManage.init(LoginActivity.this);
+        databaseHelper = DatabaseHelper.init(LoginActivity.this);
         tieAccount.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -183,8 +187,16 @@ public class LoginActivity extends BaseActivity {
             @Override
             protected void onHandleSuccess(LoginBean loginBean) {
                 //Todo 数据库保存登录用户数据
+                databaseHelper.add(loginBean);
+
                 finish();
             }
         },username,password);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        databaseHelper.close();
     }
 }

@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -45,11 +46,11 @@ public class ChatArticlesFragment extends BaseFragment {
     @BindView(R.id.refresh)
     SmartRefreshLayout refresh;
     private int id;
-    private int currentPage = 1;
+    private final int PAGE_START = 1;
+    private int currentPage = PAGE_START;
     private List<ArticleBean> articleDatas = new ArrayList<>();
-    private ChatArticlesBean chatArticles;
     private HomeAdapter mAdapter;
-
+    private boolean isOver;
     public ChatArticlesFragment(int id) {
         this.id = id;
     }
@@ -60,20 +61,38 @@ public class ChatArticlesFragment extends BaseFragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         httpManage = HttpManage.init(getContext());
-        requestArticleData(currentPage);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         initRv();
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        requestArticleData(currentPage);
+    }
+
+
 
     private void requestArticleData(int page) {
         httpManage.getChatArticles(new BaseObserver<ChatArticlesBean>(getContext()) {
             @Override
             protected void onHandleSuccess(ChatArticlesBean chatArticlesBean) {
-                chatArticles = chatArticlesBean;
-                loadMore(chatArticles);
-                articleDatas.addAll(chatArticles.getDatas());
+                isOver = chatArticlesBean.isOver();
+                articleDatas.addAll(chatArticlesBean.getDatas());
+                if (currentPage == PAGE_START){
+                    mAdapter.setNewData(chatArticlesBean.getDatas());
+                }else {
+                    mAdapter.addData(chatArticlesBean.getDatas());
+                }
+                currentPage += 1;
+                mAdapter.loadMoreComplete();
             }
         }, id, currentPage);
     }
@@ -87,26 +106,18 @@ public class ChatArticlesFragment extends BaseFragment {
                 WebActivity.start(getContext(),articleDatas.get(position).getTitle(),targetUrl);
             }
         });
+        mAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
+            @Override
+            public void onLoadMoreRequested() {
+                if (isOver){
+                    mAdapter.loadMoreEnd();
+                }else {
+                    requestArticleData(currentPage);
+                }
+            }
+        },rvChatArticles);
         rvChatArticles.setLayoutManager(new LinearLayoutManager(getContext()));
         rvChatArticles.setAdapter(mAdapter);
-    }
-
-    private void loadMore(ChatArticlesBean chatArticles) {
-        if (currentPage == 1) {
-            mAdapter.setNewData(chatArticles.getDatas());
-        }
-        if (chatArticles.isOver()) {
-            mAdapter.loadMoreEnd();
-        } else {
-            mAdapter.addData(chatArticles.getDatas());
-            mAdapter.setEnableLoadMore(false);
-            mAdapter.setOnLoadMoreListener(() -> {
-                currentPage += 1;
-                requestArticleData(currentPage);
-                mAdapter.loadMoreComplete();
-            }, rvChatArticles);
-            mAdapter.openLoadAnimation(BaseQuickAdapter.ALPHAIN);
-        }
     }
 
 }

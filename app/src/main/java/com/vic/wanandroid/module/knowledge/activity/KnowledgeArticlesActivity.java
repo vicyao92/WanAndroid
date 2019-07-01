@@ -16,6 +16,7 @@ import com.vic.wanandroid.R;
 import com.vic.wanandroid.adapter.MyFragmentPagerAdapter;
 import com.vic.wanandroid.module.knowledge.bean.KnowledgeSystemBean;
 import com.vic.wanandroid.module.knowledge.fragment.KnowledgeArticleFragment;
+import com.vic.wanandroid.utils.DatabaseHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,31 +33,33 @@ public class KnowledgeArticlesActivity extends AppCompatActivity {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     private KnowledgeSystemBean knowledgeSystemBean;
-    private Intent intent;
     private int position = 0;
     private List<Fragment> fragments = new ArrayList<>();
-
+    private DatabaseHelper databaseHelper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_knowledge_articles);
         ButterKnife.bind(this);
+        databaseHelper = DatabaseHelper.init(getApplicationContext());
         initdata();
         initToolbar();
         initViewPager();
         initTab();
     }
 
-    public static void start(Context context, int position, KnowledgeSystemBean knowledgeSystemBean) {
+    public static void start(Context context, int position,KnowledgeSystemBean bean) {
         Intent intent = new Intent(context, KnowledgeArticlesActivity.class);
-        intent.putExtra("result", knowledgeSystemBean);
+        Bundle bundle =new Bundle();
+        bundle.putSerializable("bean",bean);
         intent.putExtra("position", position);
+        intent.putExtras(bundle);
         context.startActivity(intent);
     }
 
     private void initdata() {
         position = getIntent().getIntExtra("position", 0);
-        knowledgeSystemBean = (KnowledgeSystemBean) getIntent().getSerializableExtra("result");
+        knowledgeSystemBean = (KnowledgeSystemBean) getIntent().getSerializableExtra("bean");
     }
 
     private void initToolbar() {
@@ -96,5 +99,11 @@ public class KnowledgeArticlesActivity extends AppCompatActivity {
                 break;
         }
         return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        databaseHelper.close();
     }
 }

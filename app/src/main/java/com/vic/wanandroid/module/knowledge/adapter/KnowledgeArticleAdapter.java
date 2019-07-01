@@ -23,7 +23,7 @@ public class KnowledgeArticleAdapter extends BaseQuickAdapter<ArticleBean, BaseV
     @Override
     protected void convert(BaseViewHolder helper, ArticleBean item) {
         helper.setText(R.id.tv_author, item.getAuthor());
-        helper.setText(R.id.tv_update_time, String.valueOf(item.getPublishTime()));
+        helper.setText(R.id.tv_update_time, item.getNiceDate());
         helper.setText(R.id.tv_title, item.getTitle());
         helper.setText(R.id.tv_super_chapter_name, item.getSuperChapterName());
         helper.setText(R.id.tv_chapter_name, item.getChapterName());
@@ -39,4 +39,5 @@ public class KnowledgeArticleAdapter extends BaseQuickAdapter<ArticleBean, BaseV
                     .into((ImageView) helper.getView(R.id.iv_img));
         }
     }
+
 }

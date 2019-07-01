@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -59,18 +60,20 @@ public class NavigationAdapter extends BaseQuickAdapter<NavigationBean,BaseViewH
             });
             fbl.addView(textView);
         }
-        fbl.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mOnItemClickListener != null) {
-                    mOnItemClickListener.onClick(item,0);
-                }
-            }
-        });
     }
 
     public interface OnItemClickListener {
         void onClick(NavigationBean bean, int pos);
+    }
+
+    @Override
+    public void onViewRecycled(@NonNull BaseViewHolder holder) {
+        super.onViewRecycled(holder);
+        FlexboxLayout fbl = holder.getView(R.id.fbl);
+        for (int i = 0; i < fbl.getChildCount(); i++) {
+            mFlexTextItems.offer((TextView) fbl.getChildAt(i));
+        }
+        fbl.removeAllViews();
     }
 
     public void setOnItemClickListener(NavigationAdapter.OnItemClickListener onItemClickListener) {

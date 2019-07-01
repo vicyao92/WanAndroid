@@ -2,7 +2,11 @@ package com.vic.wanandroid.module.account.bean;
 
 import java.util.List;
 
-public class LoginBean {
+import io.realm.RealmObject;
+import io.realm.annotations.Ignore;
+import io.realm.annotations.PrimaryKey;
+
+public class LoginBean extends RealmObject {
 
     /**
      * admin : false
@@ -24,8 +28,11 @@ public class LoginBean {
     private String password;
     private String token;
     private int type;
+    @PrimaryKey
     private String username;
+    @Ignore
     private List<?> chapterTops;
+    @Ignore
     private List<Integer> collectIds;
 
     public boolean isAdmin() {

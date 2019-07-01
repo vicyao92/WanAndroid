@@ -7,6 +7,7 @@ import com.vic.wanandroid.base.BaseResultBean;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import io.realm.RealmObject;
 
 public abstract class BaseObserver<T> implements Observer<BaseResultBean<T>> {
 
@@ -46,7 +47,6 @@ public abstract class BaseObserver<T> implements Observer<BaseResultBean<T>> {
         } else {
             onHandleError(value.getErrorMsg());
         }
-
     }
 
     @Override

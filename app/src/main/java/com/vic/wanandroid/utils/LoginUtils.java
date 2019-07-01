@@ -5,12 +5,14 @@ import android.content.Context;
 import com.vic.wanandroid.module.account.LoginActivity;
 import com.vic.wanandroid.module.account.bean.LoginBean;
 
+import io.realm.RealmResults;
+
 public class LoginUtils {
     private static final String LOGIN_URL = "https://www.wanandroid.com/user/login";
     private static LoginUtils instance;
     private final String COOKIE_NAME = "user_cookies";
     private LoginBean loginBean;
-    private String loginCache = null;
+    private String loginCache = "";
     private LoginUtils() {
     }
 
@@ -24,7 +26,7 @@ public class LoginUtils {
     }
 
     public String getLoginCookie() {
-        if (loginCache == null) {
+        if (loginCache.equals("")) {
             loginCache = SpUtils.getInstance().getString(COOKIE_NAME);
         }
         return loginCache;
@@ -49,7 +51,7 @@ public class LoginUtils {
 
     public boolean isLogin() {
         String cookie = getLoginCookie();
-        if (cookie == null) {
+        if (cookie.equals("")) {
             return false;
         }
         return true;
@@ -64,8 +66,12 @@ public class LoginUtils {
         }
     }
 
-    public String getLoginUrl(){
-        return LOGIN_URL;
+    public LoginBean getLoginBean(RealmResults<LoginBean> results){
+        if (results.size() == 0){
+            return null;
+        }else {
+            return results.get(0);
+        }
     }
 
 }

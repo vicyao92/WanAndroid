@@ -1,18 +1,22 @@
 package com.vic.wanandroid.http;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.vic.wanandroid.utils.LoginUtils;
+import com.vic.wanandroid.utils.NetworkUtils;
 import com.vic.wanandroid.utils.SpUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.Cache;
+import okhttp3.CacheControl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -32,9 +36,10 @@ public class HttpManage {
     private ApiManage request;
     private Context mContext;
     private OkHttpClient client;
-
+    private NetworkUtils networkUtils;
     private HttpManage(Context context) {
         this.mContext = context;
+        networkUtils = NetworkUtils.getInstance(context);
         client = initOkhttpClien().build();
         retrofit = new Retrofit.Builder()
                 .baseUrl(baseUrl)
@@ -65,6 +70,28 @@ public class HttpManage {
         return SingleHolder.getInstance(context);
     }
 
+    /**
+     * 获取首页文章
+     * @param observer
+     * @param page 页码
+     */
+    public void getHomeArticles(BaseObserver observer,int page){
+        request.getArticleList(page)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+    }
+
+    /**
+     * 获取首页Banner
+     * @param observer
+     */
+    public void getBanner(BaseObserver observer){
+        request.getBannerList()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+    }
     /**
      * 获取项目类别
      *
@@ -173,23 +200,41 @@ public class HttpManage {
         }
     }
 
+    /**
+     * 读取Cookie
+     */
     public class ReadCookieIntercepter implements Interceptor {
         @Override
         public Response intercept(Chain chain) throws IOException {
             Request.Builder builder = chain.request().newBuilder();
+            Request req;
             Observable.just(SpUtils.getInstance().getString(COOKIE_NAME, ""))
                     .subscribe(new Action1<String>() {
                         @Override
                         public void call(String cookie) {
                             //添加cookie
                             builder.addHeader("Cookie", cookie);
+                            //builder.addHeader("Cache-Control",cacheControl);
                             Log.d("response", "addHeader:" + cookie);
                         }
                     });
-            return chain.proceed(builder.build());
+            if (!networkUtils.isConnected()){
+                req= builder.cacheControl(CacheControl.FORCE_CACHE).build();
+            }else {
+ /*               req = builder.cacheControl(
+                        new CacheControl.Builder()
+                                .onlyIfCached()
+                                .maxAge(60,TimeUnit.SECONDS).build())
+                        .build();*/
+                req = builder.build();
+            }
+            return chain.proceed(req);
         }
     }
 
+    /**
+     * 储存Cookie
+     */
     private class SaveCookieIntercepter implements Interceptor {
 
         @Override
@@ -213,6 +258,18 @@ public class HttpManage {
                     });
             if (cookieBuffer.indexOf("loginUserName")>=0&&SpUtils.getInstance().getString(COOKIE_NAME).equals("")) {
                 LoginUtils.getInstance().login(cookieBuffer.toString());
+            }
+
+            if (networkUtils.isConnected()){
+                response.newBuilder()
+                        .removeHeader("Pragma")
+                        .header("Cache-Control","public,max-age=60")
+                        .build();
+            }else {
+                response.newBuilder()
+                        .removeHeader("Pragma")
+                        .header("Cache-Control","public,only-if-cached,max-age=60 * 60 * 24 * 3")
+                        .build();
             }
             return response;
         }

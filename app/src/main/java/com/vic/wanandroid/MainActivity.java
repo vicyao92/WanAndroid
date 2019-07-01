@@ -3,6 +3,7 @@ package com.vic.wanandroid;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -14,11 +15,14 @@ import com.google.android.material.navigation.NavigationView;
 import com.vic.wanandroid.adapter.MyFragmentPagerAdapter;
 import com.vic.wanandroid.base.BaseActivity;
 import com.vic.wanandroid.module.account.LoginActivity;
+import com.vic.wanandroid.module.account.bean.LoginBean;
 import com.vic.wanandroid.module.chat.fragment.ChatFragment;
 import com.vic.wanandroid.module.knowledge.fragment.KnowledgeChildFragment;
 import com.vic.wanandroid.module.navigate.fragment.NavigationFragment;
 import com.vic.wanandroid.module.project.fragment.ProjectFragment;
 import com.vic.wanandroid.module.home.fragment.HomeFragment;
+import com.vic.wanandroid.utils.DatabaseHelper;
+import com.vic.wanandroid.utils.LoginUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,13 +41,17 @@ public class MainActivity extends BaseActivity {
     DrawerLayout drawer;
     @BindView(R.id.bottom_navigation)
     BottomNavigationView bottomNavigation;
-    private List<Fragment> pagerList = new ArrayList<>();
 
+    private CircleImageView avatar;
+    private View headerView;
+    private List<Fragment> pagerList = new ArrayList<>();
+    private DatabaseHelper databaseHelper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        databaseHelper = DatabaseHelper.init(MainActivity.this);
         pagerList.add(new HomeFragment());
         pagerList.add(new KnowledgeChildFragment());
         pagerList.add(new NavigationFragment());
@@ -107,15 +115,27 @@ public class MainActivity extends BaseActivity {
                 return true;
             }
         });
-
-        View headerView = navigation.inflateHeaderView(R.layout.nav_header);
-        CircleImageView avatar = headerView.findViewById(R.id.img_avatar);
+        headerView = navigation.inflateHeaderView(R.layout.nav_header);
+        avatar = headerView.findViewById(R.id.img_avatar);
         avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 LoginActivity.start(MainActivity.this);
+                drawer.closeDrawers();
             }
         });
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (LoginUtils.getInstance().isLogin()){
+            TextView textView = headerView.findViewById(R.id.tv_state);
+            LoginBean loginBean = LoginUtils.getInstance().getLoginBean(databaseHelper.findAll(LoginBean.class));
+            textView.setText(loginBean.getUsername());
+            avatar.setClickable(false);
+        }else {
+            avatar.setClickable(true);
+        }
+    }
 }
