@@ -1,6 +1,5 @@
 package com.vic.wanandroid.base;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,14 +10,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.vic.wanandroid.R;
 import com.vic.wanandroid.http.HttpManage;
 
 import butterknife.ButterKnife;
-import io.reactivex.disposables.Disposable;
 
 public abstract class BaseFragment extends Fragment {
-    /*protected Disposable disposable;*/
     protected View rootView;
     protected HttpManage httpManage;
 

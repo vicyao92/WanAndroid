@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".module.knowledge.fragment.KnowledgeChildFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include layout="@layout/toolbar_layout" />
+    </com.google.android.material.appbar.AppBarLayout>
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
         android:id="@+id/refresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_knowledge_child"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
     </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
-</FrameLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

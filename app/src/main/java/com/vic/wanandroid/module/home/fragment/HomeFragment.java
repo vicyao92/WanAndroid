@@ -2,11 +2,9 @@ package com.vic.wanandroid.module.home.fragment;
 
 
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +13,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.vic.wanandroid.R;
 import com.vic.wanandroid.base.BaseFragment;
@@ -30,6 +29,7 @@ import com.vic.wanandroid.utils.GlideImageLoader;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.Transformer;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,6 +55,7 @@ public class HomeFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
         httpManage = HttpManage.init(getContext());
         databaseHelper = DatabaseHelper.init(getContext());
         initToolbar();
@@ -82,24 +83,11 @@ public class HomeFragment extends BaseFragment {
         databaseHelper.close();
     }
 
-    @Override
+/*    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        menu.clear();
         inflater.inflate(R.menu.menu_toolbar_home, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                DrawerLayout drawerLayout = getActivity().findViewById(R.id.drawer);
-                drawerLayout.openDrawer(GravityCompat.START);
-                break;
-            case R.id.btn_search:
-                break;
-        }
-        return true;
-    }
+        super.onCreateOptionsMenu(menu, inflater);
+    }*/
 
     @Override
     public int getResId() {
@@ -107,12 +95,20 @@ public class HomeFragment extends BaseFragment {
     }
 
     private void initToolbar() {
-        setHasOptionsMenu(true);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.drawable.menu);
+            actionBar.setTitle(R.string.home);
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DrawerLayout drawerLayout = getActivity().findViewById(R.id.drawer);
+                    drawerLayout.openDrawer(GravityCompat.START);
+                }
+            });
+            toolbar.inflateMenu(R.menu.menu_toolbar_home);
         }
     }
 

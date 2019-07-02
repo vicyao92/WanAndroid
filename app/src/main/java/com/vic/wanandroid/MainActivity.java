@@ -17,10 +17,10 @@ import com.vic.wanandroid.base.BaseActivity;
 import com.vic.wanandroid.module.account.LoginActivity;
 import com.vic.wanandroid.module.account.bean.LoginBean;
 import com.vic.wanandroid.module.chat.fragment.ChatFragment;
+import com.vic.wanandroid.module.home.fragment.HomeFragment;
 import com.vic.wanandroid.module.knowledge.fragment.KnowledgeChildFragment;
 import com.vic.wanandroid.module.navigate.fragment.NavigationFragment;
 import com.vic.wanandroid.module.project.fragment.ProjectFragment;
-import com.vic.wanandroid.module.home.fragment.HomeFragment;
 import com.vic.wanandroid.utils.DatabaseHelper;
 import com.vic.wanandroid.utils.LoginUtils;
 
@@ -138,4 +138,5 @@ public class MainActivity extends BaseActivity {
             avatar.setClickable(true);
         }
     }
+
 }

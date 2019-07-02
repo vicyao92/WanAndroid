@@ -3,11 +3,14 @@ package com.vic.wanandroid.module.chat.fragment;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.MenuItem;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
@@ -15,20 +18,14 @@ import com.google.android.material.tabs.TabLayout;
 import com.vic.wanandroid.R;
 import com.vic.wanandroid.adapter.MyFragmentPagerAdapter;
 import com.vic.wanandroid.base.BaseFragment;
-import com.vic.wanandroid.base.BaseResultBean;
 import com.vic.wanandroid.http.BaseObserver;
 import com.vic.wanandroid.http.HttpManage;
 import com.vic.wanandroid.module.chat.bean.AccountBean;
-import com.vic.wanandroid.module.project.bean.ProjectChapter;
-import com.vic.wanandroid.module.project.fragment.ProjectArticlesFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -40,11 +37,15 @@ public class ChatFragment extends BaseFragment {
     TabLayout tabChat;
     @BindView(R.id.vp_chat)
     ViewPager vpChat;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
     private ChatArticlesFragment articlesFragment;
     private List<Fragment> fragments = new ArrayList<>();
     private List<AccountBean> accounts = new ArrayList<>();
+
     public ChatFragment() {
     }
+
     @Override
     public int getResId() {
         return R.layout.fragment_chat;
@@ -53,8 +54,16 @@ public class ChatFragment extends BaseFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         httpManage = HttpManage.init(getContext());
     }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        initToolbar();
+    }
+
 
     @Override
     public void onStart() {
@@ -91,4 +100,23 @@ public class ChatFragment extends BaseFragment {
         }
     }
 
+    private void initToolbar() {
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.drawable.menu);
+            actionBar.setTitle(R.string.wechat);
+
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            DrawerLayout drawerLayout = getActivity().findViewById(R.id.drawer);
+            drawerLayout.openDrawer(GravityCompat.START);
+        }
+        return true;
+    }
 }
