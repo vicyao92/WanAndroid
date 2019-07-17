@@ -2,13 +2,14 @@ package com.vic.wanandroid.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+
 import com.vic.wanandroid.base.MyApp;
 
 public class SpUtils {
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     private final String NAME = "UserCache";
-    private static SpUtils instance;//单例模式 双重检查锁定
+    private static SpUtils instance;
     private SpUtils() {
         this.sharedPreferences = MyApp.getContext().getSharedPreferences(NAME, Context.MODE_PRIVATE);
         this.editor = sharedPreferences.edit();

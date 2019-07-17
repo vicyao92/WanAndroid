@@ -8,7 +8,7 @@ import com.vic.wanandroid.module.account.bean.LoginBean;
 import io.realm.RealmResults;
 
 public class LoginUtils {
-    private static final String LOGIN_URL = "https://www.wanandroid.com/user/login";
+    public static final String LOGIN_URL = "https://www.wanandroid.com/user/login";
     private static LoginUtils instance;
     private final String COOKIE_NAME = "user_cookies";
     private LoginBean loginBean;
@@ -41,7 +41,7 @@ public class LoginUtils {
     }*/
 
     public void logout() {
-        loginCache = null;
+        loginCache = "";
         SpUtils.getInstance().clear();
     }
 

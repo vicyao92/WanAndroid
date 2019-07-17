@@ -2,6 +2,7 @@ package com.vic.wanandroid.module.home.fragment;
 
 
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -15,11 +16,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.vic.wanandroid.MainActivity;
 import com.vic.wanandroid.R;
 import com.vic.wanandroid.base.BaseFragment;
 import com.vic.wanandroid.base.WebActivity;
 import com.vic.wanandroid.http.BaseObserver;
 import com.vic.wanandroid.http.HttpManage;
+import com.vic.wanandroid.module.home.activity.SearchActivity;
 import com.vic.wanandroid.module.home.adapter.HomeAdapter;
 import com.vic.wanandroid.module.home.bean.ArticleBean;
 import com.vic.wanandroid.module.home.bean.BannerBean;
@@ -51,17 +54,19 @@ public class HomeFragment extends BaseFragment {
     private final int PAGE_START = 0;
     private int currentPage = PAGE_START;
     private boolean isOver;
-
+    private MainActivity activity;
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
         httpManage = HttpManage.init(getContext());
         databaseHelper = DatabaseHelper.init(getContext());
+        activity = (MainActivity) getActivity();
         initToolbar();
         initBannerSetting();
         initRv();
-
+        activity.createProgressBar(getActivity());
+        activity.showProgressBar();
     }
 
     @Override
@@ -83,15 +88,38 @@ public class HomeFragment extends BaseFragment {
         databaseHelper.close();
     }
 
-/*    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_toolbar_home, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }*/
-
     @Override
     public int getResId() {
         return R.layout.fragment_home;
+    }
+
+    private void initRv() {
+        mAdapter = new HomeAdapter(R.layout.item_rv_articles, articleLists, getContext());
+        mAdapter.addHeaderView(banner);
+        mAdapter.setEnableLoadMore(true);
+        mAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
+            @Override
+            public void onLoadMoreRequested() {
+                if (isOver) {
+                    mAdapter.loadMoreEnd();
+                } else {
+                    loadDatas(currentPage);
+                }
+            }
+        }, rvArticles);
+        mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                ArticleBean article = articleLists.get(position);
+                int id = article.getId();
+                String title = article.getTitle();
+                String targetUrl = article.getLink().trim();
+                WebActivity.start(getContext(), id, title, targetUrl, 0);
+            }
+        });
+        mAdapter.openLoadAnimation(BaseQuickAdapter.ALPHAIN);
+        rvArticles.setLayoutManager(new LinearLayoutManager(getContext()));
+        rvArticles.setAdapter(mAdapter);
     }
 
     private void initToolbar() {
@@ -152,46 +180,42 @@ public class HomeFragment extends BaseFragment {
         banner.setIndicatorGravity(BannerConfig.RIGHT);
     }
 
-    private void initRv() {
-        mAdapter = new HomeAdapter(R.layout.item_rv_articles, articleLists, getContext());
-        mAdapter.addHeaderView(banner);
-        mAdapter.setEnableLoadMore(true);
-        mAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
-            @Override
-            public void onLoadMoreRequested() {
-                if (isOver) {
-                    mAdapter.loadMoreEnd();
-                } else {
-                    loadDatas(currentPage);
-                }
-            }
-        }, rvArticles);
-        mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                String targetUrl = articleLists.get(position).getLink().trim();
-                WebActivity.start(getContext(), articleLists.get(position).getTitle(), targetUrl);
-            }
-        });
-        mAdapter.openLoadAnimation(BaseQuickAdapter.ALPHAIN);
-        rvArticles.setLayoutManager(new LinearLayoutManager(getContext()));
-        rvArticles.setAdapter(mAdapter);
-    }
-
     private void loadDatas(int page) {
         httpManage.getHomeArticles(new BaseObserver<HomeBean>(getContext()) {
+            @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+                activity.hideProgressBar();
+            }
+
             @Override
             protected void onHandleSuccess(HomeBean homeBean) {
                 articleLists.addAll(homeBean.getDatas());
                 isOver = homeBean.isOver();
-                if (currentPage == PAGE_START){
+                if (currentPage == PAGE_START) {
                     mAdapter.setNewData(homeBean.getDatas());
-                }else {
+                } else {
                     mAdapter.addData(homeBean.getDatas());
                 }
                 currentPage += 1;
                 mAdapter.loadMoreComplete();
+                activity.hideProgressBar();
             }
         }, page);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        activity.hideProgressBar();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.btn_search) {
+            SearchActivity.start(getContext());
+            return true;
+        }
+        return false;
     }
 }

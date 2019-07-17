@@ -7,31 +7,13 @@ import com.vic.wanandroid.base.BaseResultBean;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import io.realm.RealmObject;
 
 public abstract class BaseObserver<T> implements Observer<BaseResultBean<T>> {
-
     private Disposable disposable;
     private Context context;
     protected BaseObserver(Context mContext) {
         this.context = mContext;
     }
-
-    //带进度条的请求
-/*
-    protected BaseObserver(Context context,boolean showProgress){
-        this.mContext=context.getApplicationContext();
-        if(showProgress){
-            progressDialog=new ProgressDialog(context);
-            progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                @Override
-                public void onCancel(DialogInterface dialogInterface) {
-                    disposable.dispose();
-                }
-            });
-        }
-    }
-*/
 
     @Override
     public void onSubscribe(Disposable d) {
@@ -51,17 +33,11 @@ public abstract class BaseObserver<T> implements Observer<BaseResultBean<T>> {
 
     @Override
     public void onError(Throwable e) {
-       /* if(progressDialog!=null){
-            progressDialog.dismiss();
-        }*/
         disposable.dispose();
     }
 
     @Override
     public void onComplete() {
-       /* if(progressDialog!=null&&progressDialog.isShowing()){
-            progressDialog.dismiss();
-        }*/
     }
 
     protected abstract void onHandleSuccess(T t);

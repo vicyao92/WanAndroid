@@ -11,13 +11,13 @@
     android:background="?attr/colorPrimary"
     android:navigationIcon="@drawable/menu"
     app:titleTextColor="@color/text_toolbar_title"
-    app:popupTheme="@style/OverflowMenuStyle"
-    style="@style/ToolBarStyle">
+    android:theme="@style/ToolBarStyle"
+    app:popupTheme="@style/OverflowMenuStyle">
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
         android:textColor="@color/text_toolbar_title"
         android:text=""
-        android:layout_gravity="center"
         android:gravity="center"/>
 </androidx.appcompat.widget.Toolbar>

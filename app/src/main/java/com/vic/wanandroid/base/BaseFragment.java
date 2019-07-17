@@ -15,9 +15,9 @@ import com.vic.wanandroid.http.HttpManage;
 import butterknife.ButterKnife;
 
 public abstract class BaseFragment extends Fragment {
-    protected View rootView;
+    public BaseActivity activity;
     protected HttpManage httpManage;
-
+    private View rootView;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -29,13 +29,25 @@ public abstract class BaseFragment extends Fragment {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
     }
 
     public abstract int getResId();
 
+    /*    public abstract BaseActivity getParentActivity();*/
+
+    public void getParentActivity(BaseActivity activity) {
+        this.activity = activity;
+    }
     public void logging(String msg){
         Log.d("debugData",msg);
     }
+
+
 }

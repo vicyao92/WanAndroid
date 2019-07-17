@@ -2,10 +2,6 @@ package com.vic.wanandroid.module.knowledge.fragment;
 
 
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -13,30 +9,21 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.scwang.smartrefresh.header.WaveSwipeHeader;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
-import com.scwang.smartrefresh.layout.constant.SpinnerStyle;
-import com.scwang.smartrefresh.layout.footer.BallPulseFooter;
+import com.vic.wanandroid.MainActivity;
 import com.vic.wanandroid.R;
 import com.vic.wanandroid.base.BaseFragment;
-import com.vic.wanandroid.base.BaseResultBean;
 import com.vic.wanandroid.base.WebActivity;
 import com.vic.wanandroid.http.BaseObserver;
 import com.vic.wanandroid.http.HttpManage;
 import com.vic.wanandroid.module.home.bean.ArticleBean;
 import com.vic.wanandroid.module.knowledge.adapter.KnowledgeArticleAdapter;
-import com.vic.wanandroid.module.knowledge.bean.ChildrenBean;
 import com.vic.wanandroid.module.knowledge.bean.KnowledgeArticleBean;
-import com.vic.wanandroid.module.knowledge.bean.KnowledgeSystemBean;
-import com.vic.wanandroid.module.project.bean.ProjectArticles;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -57,6 +44,7 @@ public class KnowledgeArticleFragment extends BaseFragment {
         this.cid = cid;
     }
 
+    private MainActivity activity;
     @Override
     public int getResId() {
         return R.layout.fragment_knowledge_article;
@@ -72,6 +60,9 @@ public class KnowledgeArticleFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initRv();
+        activity = (MainActivity) getActivity();
+        activity.createProgressBar(getActivity());
+        activity.showProgressBar();
     }
 
     @Override
@@ -83,7 +74,7 @@ public class KnowledgeArticleFragment extends BaseFragment {
     private void initRv() {
         adapter = new KnowledgeArticleAdapter(R.layout.item_rv_articles,articles);
         adapter.setOnItemClickListener((adapter, view, position) -> WebActivity.start(getContext()
-                ,articles.get(position).getTitle(),articles.get(position).getLink()));
+                , articles.get(position).getId(), articles.get(position).getTitle(), articles.get(position).getLink(), 0));
         adapter.openLoadAnimation(BaseQuickAdapter.ALPHAIN);
         adapter.setEnableLoadMore(true);
         adapter.setOnLoadMoreListener(() -> {
@@ -100,6 +91,12 @@ public class KnowledgeArticleFragment extends BaseFragment {
     private void requestDataFromWeb(int page,int cid){
         httpManage.getKnowledgeArticle(new BaseObserver<KnowledgeArticleBean>(getContext()) {
             @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+                activity.hideProgressBar();
+            }
+
+            @Override
             protected void onHandleSuccess(KnowledgeArticleBean knowledgeArticleBean) {
                 articles = knowledgeArticleBean.getDatas();
                 isOver = knowledgeArticleBean.isOver();
@@ -110,6 +107,7 @@ public class KnowledgeArticleFragment extends BaseFragment {
                 }
                 currentPage += 1;
                 adapter.loadMoreComplete();
+                activity.hideProgressBar();
             }
         },page,cid);
     }

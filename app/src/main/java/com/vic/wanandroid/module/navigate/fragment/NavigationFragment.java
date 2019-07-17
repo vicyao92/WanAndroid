@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.vic.wanandroid.MainActivity;
 import com.vic.wanandroid.R;
 import com.vic.wanandroid.base.BaseFragment;
 import com.vic.wanandroid.base.WebActivity;
@@ -42,7 +43,7 @@ public class NavigationFragment extends BaseFragment {
     Toolbar toolbar;
     private List<NavigationBean> navigations = new ArrayList<>();
     private NavigationAdapter adapter;
-
+    private MainActivity activity;
     public NavigationFragment() {
     }
 
@@ -50,6 +51,9 @@ public class NavigationFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
+        activity = (MainActivity) getActivity();
+        activity.createProgressBar(getActivity());
+        activity.showProgressBar();
     }
 
     @Override
@@ -64,16 +68,22 @@ public class NavigationFragment extends BaseFragment {
     private void requestDataFromWeb() {
         httpManage.getNavigationList(new BaseObserver<List<NavigationBean>>(getContext()) {
             @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+                activity.hideProgressBar();
+            }
+
+            @Override
             protected void onHandleSuccess(List<NavigationBean> navigationBeans) {
                 navigations = navigationBeans;
                 adapter.setNewData(navigations);
                 adapter.loadMoreEnd();
+                activity.hideProgressBar();
             }
         });
     }
 
     private void initToolbar() {
-
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         if (actionBar != null) {
@@ -93,9 +103,10 @@ public class NavigationFragment extends BaseFragment {
         adapter.setOnItemClickListener(new NavigationAdapter.OnItemClickListener() {
             @Override
             public void onClick(NavigationBean bean, int pos) {
-                String title = bean.getArticles().get(pos).getTitle();
+                int id = bean.getArticles().get(pos).getId();
                 String url = bean.getArticles().get(pos).getLink();
-                WebActivity.start(getActivity(), title, url);
+                String title = bean.getArticles().get(pos).getTitle();
+                WebActivity.start(getActivity(), id, title, url, 1);
             }
         });
         rvKnowledgeChild.setLayoutManager(new LinearLayoutManager(getContext()));

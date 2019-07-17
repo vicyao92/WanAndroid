@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.vic.wanandroid.MainActivity;
 import com.vic.wanandroid.R;
 import com.vic.wanandroid.base.BaseFragment;
 import com.vic.wanandroid.http.BaseObserver;
@@ -44,7 +45,7 @@ public class KnowledgeChildFragment extends BaseFragment {
     Toolbar toolbar;
     private List<KnowledgeSystemBean> knowledgeSystemBeanList = new ArrayList<>();
     private KnowledgeAdapter adapter;
-
+    private MainActivity activity;
     public KnowledgeChildFragment() {
 
     }
@@ -72,14 +73,24 @@ public class KnowledgeChildFragment extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
         initToolbar();
         initRv();
+        activity = (MainActivity) getActivity();
+        activity.createProgressBar(getActivity());
+        activity.showProgressBar();
     }
 
     private void requestDataFromWeb() {
         httpManage.getKnowledgeSystem(new BaseObserver<List<KnowledgeSystemBean>>(getContext()) {
             @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+                activity.hideProgressBar();
+            }
+
+            @Override
             protected void onHandleSuccess(List<KnowledgeSystemBean> knowledgeSystemBeans) {
                 knowledgeSystemBeanList.addAll(knowledgeSystemBeans);
                 adapter.setNewData(knowledgeSystemBeans);
+                activity.hideProgressBar();
             }
         });
     }

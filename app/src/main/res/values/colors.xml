@@ -14,4 +14,27 @@
     <color name="text_toolbar">#FFFFFF</color>
     <color name="text_normal">#F2D1D1D1</color>
     <color name = "error">#FF0000</color>
+
+    <color name="orange">#FFFFBB33</color>
+    <color name="purple">#FFAA66CC</color>
+    <color name="blue">#FF33B5E5</color>
+    <color name="green">#FF99CC00</color>
+    <color name="dark_purple">#FF9933CC</color>
+    <color name="dark_orange">#FFFF8800</color>
+    <color name="dark_blue">#FF0099CC</color>
+    <color name="dark_green">#FF669900</color>
+    <color name="glass">#2a5caa</color>
+    <color name="pink">#FF84BA</color>
+    <integer-array name="tvBackgroundColor">
+        <item>@color/orange</item>
+        <item>@color/dark_orange</item>
+        <item>@color/purple</item>
+        <item>@color/dark_purple</item>
+        <item>@color/blue</item>
+        <item>@color/dark_blue</item>
+        <item>@color/green</item>
+        <item>@color/dark_green</item>
+        <item>@color/glass</item>
+        <item>@color/pink</item>
+    </integer-array>
 </resources>

@@ -1,5 +1,6 @@
 package com.vic.wanandroid;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,10 +18,14 @@ import com.vic.wanandroid.base.BaseActivity;
 import com.vic.wanandroid.module.account.LoginActivity;
 import com.vic.wanandroid.module.account.bean.LoginBean;
 import com.vic.wanandroid.module.chat.fragment.ChatFragment;
+import com.vic.wanandroid.module.collect.activity.ArticleCollectActivity;
+import com.vic.wanandroid.module.collect.activity.WebsiteCollectActivity;
+import com.vic.wanandroid.module.collect.fragment.NormalDialog;
 import com.vic.wanandroid.module.home.fragment.HomeFragment;
 import com.vic.wanandroid.module.knowledge.fragment.KnowledgeChildFragment;
 import com.vic.wanandroid.module.navigate.fragment.NavigationFragment;
 import com.vic.wanandroid.module.project.fragment.ProjectFragment;
+import com.vic.wanandroid.utils.CacheUtils;
 import com.vic.wanandroid.utils.DatabaseHelper;
 import com.vic.wanandroid.utils.LoginUtils;
 
@@ -46,12 +51,15 @@ public class MainActivity extends BaseActivity {
     private View headerView;
     private List<Fragment> pagerList = new ArrayList<>();
     private DatabaseHelper databaseHelper;
+    private TextView textView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         databaseHelper = DatabaseHelper.init(MainActivity.this);
+
         pagerList.add(new HomeFragment());
         pagerList.add(new KnowledgeChildFragment());
         pagerList.add(new NavigationFragment());
@@ -92,6 +100,7 @@ public class MainActivity extends BaseActivity {
         });
         viewPager.setAdapter(new MyFragmentPagerAdapter(getSupportFragmentManager(), pagerList));
         viewPager.setCurrentItem(0);
+        viewPager.setOffscreenPageLimit(1);
         bottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -115,7 +124,9 @@ public class MainActivity extends BaseActivity {
                 return true;
             }
         });
+
         headerView = navigation.inflateHeaderView(R.layout.nav_header);
+        textView = headerView.findViewById(R.id.tv_state);
         avatar = headerView.findViewById(R.id.img_avatar);
         avatar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,19 +135,72 @@ public class MainActivity extends BaseActivity {
                 drawer.closeDrawers();
             }
         });
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        MenuItem item = navigation.getMenu().findItem(R.id.nav_logout);
         if (LoginUtils.getInstance().isLogin()){
-            TextView textView = headerView.findViewById(R.id.tv_state);
             LoginBean loginBean = LoginUtils.getInstance().getLoginBean(databaseHelper.findAll(LoginBean.class));
             textView.setText(loginBean.getUsername());
             avatar.setClickable(false);
-        }else {
+            item.setVisible(true);
+        } else {
+            item.setVisible(false);
             avatar.setClickable(true);
         }
+
+        navigation.setNavigationItemSelectedListener(menuItem -> {
+            Intent intent;
+            switch (menuItem.getItemId()) {
+                case R.id.nav_collect:
+                    if (LoginUtils.getInstance().isLogin()) {
+                        intent = new Intent(MainActivity.this, ArticleCollectActivity.class);
+                        startActivity(intent);
+                    } else {
+                        LoginActivity.start(MainActivity.this);
+                    }
+                    break;
+                case R.id.nav_logout:
+                    NormalDialog dialog = new NormalDialog("确定要退出登录么？");
+                    dialog.setPositiveClickListener(() -> logout(item));
+                    dialog.show(getSupportFragmentManager(), "ExitConfirmDialog");
+                    break;
+                case R.id.nav_collect_website:
+                    if (LoginUtils.getInstance().isAlreradyLogin(MainActivity.this)) {
+                        WebsiteCollectActivity.start(MainActivity.this);
+                    }
+                    break;
+                case R.id.nav_clear_cache:
+                    try {
+                        clearCache();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+            }
+            drawer.closeDrawers();
+            return true;
+        });
     }
 
+    private void logout(MenuItem item) {
+        LoginUtils.getInstance().logout();
+        textView.setText("未登陆");
+        avatar.setClickable(true);
+        item.setVisible(false);
+    }
+
+    private void clearCache() throws Exception {
+        String cacheSize = CacheUtils.getTotalCacheSize(MainActivity.this);
+        NormalDialog dialog = new NormalDialog("确定清除所有缓存吗（" + cacheSize + "）");
+        if (cacheSize.equals("0K")) {
+            dialog.setPositiveClickListener(() -> dialog.dismiss());
+        } else {
+            dialog.setPositiveClickListener(() -> CacheUtils.clearAllCache(MainActivity.this));
+        }
+        dialog.show(getSupportFragmentManager(), "ExitConfirmDialog");
+    }
 }

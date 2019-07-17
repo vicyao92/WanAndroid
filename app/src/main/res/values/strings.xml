@@ -12,6 +12,8 @@
     <string name="title_notifications">Notifications</string>
     <string name="title_activity_main2">Main2Activity</string>
     <string name="collect">收藏</string>
+    <string name="collect_article">收藏文章</string>
+    <string name="collect_website">收藏网站</string>
     <string name="open_by_self_browser">用浏览器打开</string>
     <string name="navigate">导航</string>
     <string name="unLogin">未登录</string>
@@ -20,4 +22,12 @@
     <string name="username">用户名</string>
     <string name="password">密码</string>
     <string name="btn_login">登录</string>
+    <string name="register">注册</string>
+    <string name="re_password">再次输入密码</string>
+    <string name="logout">退出登录</string>
+    <string name="delete">删除</string>
+    <string name="edit">编辑</string>
+    <string name="hot_key">大家都在搜</string>
+    <string name="websites_friend">常用网站</string>
+    <string name="search_histroy">搜索历史</string>
 </resources>

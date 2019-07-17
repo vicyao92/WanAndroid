@@ -2,12 +2,8 @@ package com.vic.wanandroid.utils;
 
 import android.content.Context;
 
-import java.lang.reflect.ParameterizedType;
-import java.util.List;
-
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
-import io.realm.RealmModel;
 import io.realm.RealmObject;
 import io.realm.RealmResults;
 
@@ -31,7 +27,7 @@ public class DatabaseHelper {
         realm.close();
     }
 
-    public <T extends RealmObject> void add(T t){
+    public <T extends RealmObject> void add(T t) {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
@@ -40,11 +36,31 @@ public class DatabaseHelper {
         });
     }
 
-    public RealmResults findAll(Class cl){
+    public RealmResults findAll(Class cl) {
         return realm.where(cl).findAll();
     }
 
-    public Realm getRealm(){
+    public void deleteResult(Class cl, int index) {
+        RealmResults results = realm.where(cl).findAll();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                results.deleteFromRealm(index);
+            }
+        });
+    }
+
+    public void deleteAllResult(Class cl) {
+        RealmResults results = realm.where(cl).findAll();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                results.deleteAllFromRealm();
+            }
+        });
+    }
+
+    public Realm getRealm() {
         return this.realm;
     }
 }

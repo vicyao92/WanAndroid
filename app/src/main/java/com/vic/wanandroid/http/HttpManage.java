@@ -1,7 +1,6 @@
 package com.vic.wanandroid.http;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.vic.wanandroid.utils.LoginUtils;
@@ -12,7 +11,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.Cache;
@@ -60,7 +58,7 @@ public class HttpManage {
         httpclient.connectTimeout(DEFAULT_TIME_OUT, TimeUnit.SECONDS)
                 .readTimeout(DEFAULT_TIME_OUT, TimeUnit.SECONDS)
                 .writeTimeout(DEFAULT_TIME_OUT, TimeUnit.SECONDS)
-                .cache(new Cache(new File(mContext.getExternalCacheDir(), "okhttpcache"), 20 * 1024 * 1024))
+                .cache(new Cache(new File(mContext.getExternalCacheDir(), "okhttpcache"), 50 * 1024 * 1024))
                 .addInterceptor(new ReadCookieIntercepter())
                 .addInterceptor(new SaveCookieIntercepter());
         return httpclient;
@@ -182,6 +180,13 @@ public class HttpManage {
                 .subscribe(observer);
     }
 
+    /**
+     * 登录
+     *
+     * @param observer
+     * @param username
+     * @param password
+     */
     public void login(BaseObserver observer, String username, String password) {
         request.login(username, password)
                 .subscribeOn(Schedulers.newThread())
@@ -189,10 +194,108 @@ public class HttpManage {
                 .subscribe(observer);
     }
 
+    /**
+     * 注册
+     *
+     * @param observer
+     * @param username
+     * @param password
+     * @param rePassword
+     */
+    public void register(BaseObserver observer, String username, String password, String rePassword) {
+        request.register(username, password, rePassword)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+    }
+
+    public void collect(BaseObserver observer, int id) {
+        request.collect(id)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+    }
+
+    public void collect(BaseObserver observer, String title, String author, String link) {
+        request.collect(title, author, link)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+    }
+
+    public void uncollect(BaseObserver observer, int id) {
+        request.uncollect(id)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+    }
+
+    public void uncollect(BaseObserver observer, int id, int originId) {
+        request.uncollect(id, originId)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+    }
+
+    public void getArticleCollections(BaseObserver observer, int page) {
+        request.getArticleCollections(page)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+    }
+
+    public void collectWebsite(BaseObserver observer, String name, String link) {
+        request.collectWebsite(name, link)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+    }
+
+    public void unCollectWebsite(BaseObserver observer, int id) {
+        request.deleteWebsite(id)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+    }
+
+    public void getWebsiteCollect(BaseObserver observer) {
+        request.getWebsiteCollect()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+    }
+
+    public void updateWebsite(BaseObserver observer, int id, String name, String link) {
+        request.updateWebsite(id, name, link)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+    }
+
+    public void getHotkey(BaseObserver observer) {
+        request.getHotkey()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+    }
+
+    public void getFriendWebsite(BaseObserver observer) {
+        request.getFriendWebsite()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+    }
+
+    public void search(BaseObserver observer, int page, String key) {
+        request.search(page, key)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+    }
     private static class SingleHolder {
         private static HttpManage httpManager = null;
 
-        public static HttpManage getInstance(Context context) {
+        private static HttpManage getInstance(Context context) {
             if (httpManager == null) {
                 httpManager = new HttpManage(context);
             }
@@ -220,8 +323,8 @@ public class HttpManage {
                     });
             if (!networkUtils.isConnected()){
                 req= builder.cacheControl(CacheControl.FORCE_CACHE).build();
-            }else {
- /*               req = builder.cacheControl(
+            } else {
+                /*req = builder.cacheControl(
                         new CacheControl.Builder()
                                 .onlyIfCached()
                                 .maxAge(60,TimeUnit.SECONDS).build())
@@ -256,14 +359,16 @@ public class HttpManage {
                             cookieBuffer.append(cookie).append(";");
                         }
                     });
-            if (cookieBuffer.indexOf("loginUserName")>=0&&SpUtils.getInstance().getString(COOKIE_NAME).equals("")) {
-                LoginUtils.getInstance().login(cookieBuffer.toString());
+            if (request.url().toString().equals(LoginUtils.LOGIN_URL)) {
+                if (cookieBuffer.indexOf("loginUserName") >= 0 && SpUtils.getInstance().getString(COOKIE_NAME).equals("")) {
+                    LoginUtils.getInstance().login(cookieBuffer.toString());
+                }
             }
 
             if (networkUtils.isConnected()){
                 response.newBuilder()
                         .removeHeader("Pragma")
-                        .header("Cache-Control","public,max-age=60")
+                        .header("Cache-Control", "public,max-age=60 * 60")
                         .build();
             }else {
                 response.newBuilder()

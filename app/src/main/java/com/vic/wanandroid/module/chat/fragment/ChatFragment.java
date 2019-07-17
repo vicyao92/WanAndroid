@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
+import com.vic.wanandroid.MainActivity;
 import com.vic.wanandroid.R;
 import com.vic.wanandroid.adapter.MyFragmentPagerAdapter;
 import com.vic.wanandroid.base.BaseFragment;
@@ -42,7 +43,7 @@ public class ChatFragment extends BaseFragment {
     private ChatArticlesFragment articlesFragment;
     private List<Fragment> fragments = new ArrayList<>();
     private List<AccountBean> accounts = new ArrayList<>();
-
+    private MainActivity activity;
     public ChatFragment() {
     }
 
@@ -62,6 +63,9 @@ public class ChatFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initToolbar();
+        activity = (MainActivity) getActivity();
+        activity.createProgressBar(getActivity());
+        activity.showProgressBar();
     }
 
 
@@ -74,6 +78,7 @@ public class ChatFragment extends BaseFragment {
                 accounts = accountBeans;
                 initViewPager(accounts);
                 initTab(accounts);
+                activity.hideProgressBar();
             }
         });
     }

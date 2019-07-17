@@ -1,20 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-    <group>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:id="@+id/group_collect">
         <item
             android:id="@+id/nav_collect"
             android:icon="@drawable/collect_empty"
-            android:title="@string/collect" />
+            android:title="@string/collect_article" />
         <item
-            android:id="@+id/nav_people"
-            android:icon="@drawable/people"
-            android:title="@string/focus" />
+            android:id="@+id/nav_collect_website"
+            android:icon="@drawable/link"
+            android:title="@string/collect_website" />
     </group>
-    <group>
+    <!--    <group android:id="@+id/group_todo">
+            <item
+                android:id="@+id/nav_todo"
+                android:icon="@drawable/todo"
+                android:title="@string/todo" />
+        </group>-->
+    <group android:id="@+id/group_setting">
         <item
-            android:id="@+id/nav_todo"
-            android:icon="@drawable/todo"
-            android:title="@string/todo" />
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/logout"
+            android:title="退出登录" />
+        <item
+            android:id="@+id/nav_clear_cache"
+            android:icon="@mipmap/clear"
+            android:title="清除缓存" />
     </group>
 </menu>

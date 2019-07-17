@@ -37,7 +37,6 @@ public class ProjectFragment extends BaseFragment {
     private ProjectArticlesFragment articlesFragment;
     private List<Fragment> fragments = new ArrayList<>();
     private List<ProjectChapter> projectChapters = new ArrayList<>();
-
     public ProjectFragment() {
     }
 

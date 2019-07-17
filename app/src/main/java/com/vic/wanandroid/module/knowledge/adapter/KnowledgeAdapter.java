@@ -6,13 +6,12 @@ import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.google.android.flexbox.FlexboxLayout;
 import com.vic.wanandroid.R;
 import com.vic.wanandroid.module.knowledge.bean.KnowledgeSystemBean;
-import com.google.android.flexbox.FlexboxLayout;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -67,9 +66,6 @@ public class KnowledgeAdapter extends BaseQuickAdapter<KnowledgeSystemBean, Base
         return (TextView) mInflater.inflate(R.layout.item_fbl, fbl, false);
     }
 
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        mOnItemClickListener = onItemClickListener;
-    }
 
     @Override
     public void onViewRecycled(@NonNull BaseViewHolder holder) {
@@ -79,6 +75,10 @@ public class KnowledgeAdapter extends BaseQuickAdapter<KnowledgeSystemBean, Base
             mFlexTextItems.offer((TextView) fbl.getChildAt(i));
         }
         fbl.removeAllViews();
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        mOnItemClickListener = onItemClickListener;
     }
 
     public interface OnItemClickListener {
