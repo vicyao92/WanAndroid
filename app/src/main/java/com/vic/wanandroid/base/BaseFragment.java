@@ -45,6 +45,7 @@ public abstract class BaseFragment extends Fragment {
     public void getParentActivity(BaseActivity activity) {
         this.activity = activity;
     }
+
     public void logging(String msg){
         Log.d("debugData",msg);
     }

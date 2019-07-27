@@ -2,11 +2,14 @@ package com.vic.wanandroid;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
@@ -21,6 +24,7 @@ import com.vic.wanandroid.module.chat.fragment.ChatFragment;
 import com.vic.wanandroid.module.collect.activity.ArticleCollectActivity;
 import com.vic.wanandroid.module.collect.activity.WebsiteCollectActivity;
 import com.vic.wanandroid.module.collect.fragment.NormalDialog;
+import com.vic.wanandroid.module.home.activity.SearchActivity;
 import com.vic.wanandroid.module.home.fragment.HomeFragment;
 import com.vic.wanandroid.module.knowledge.fragment.KnowledgeChildFragment;
 import com.vic.wanandroid.module.navigate.fragment.NavigationFragment;
@@ -46,7 +50,8 @@ public class MainActivity extends BaseActivity {
     DrawerLayout drawer;
     @BindView(R.id.bottom_navigation)
     BottomNavigationView bottomNavigation;
-
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
     private CircleImageView avatar;
     private View headerView;
     private List<Fragment> pagerList = new ArrayList<>();
@@ -60,6 +65,7 @@ public class MainActivity extends BaseActivity {
         ButterKnife.bind(this);
         databaseHelper = DatabaseHelper.init(MainActivity.this);
 
+        initToolbar();
         pagerList.add(new HomeFragment());
         pagerList.add(new KnowledgeChildFragment());
         pagerList.add(new NavigationFragment());
@@ -76,21 +82,27 @@ public class MainActivity extends BaseActivity {
                 switch (position) {
                     case 0:
                         bottomNavigation.setSelectedItemId(R.id.menu_home);
+                        toolbar.setTitle(R.string.home);
                         break;
                     case 1:
                         bottomNavigation.setSelectedItemId(R.id.menu_knowledge);
+                        toolbar.setTitle(R.string.book_system);
                         break;
                     case 2:
                         bottomNavigation.setSelectedItemId(R.id.menu_navi);
+                        toolbar.setTitle(R.string.navigate);
                         break;
                     case 3:
                         bottomNavigation.setSelectedItemId(R.id.menu_chat);
+                        toolbar.setTitle(R.string.wechat);
                         break;
                     case 4:
                         bottomNavigation.setSelectedItemId(R.id.menu_project);
+                        toolbar.setTitle(R.string.project);
                         break;
 
                 }
+                refreshMenu();
             }
 
             @Override
@@ -115,6 +127,7 @@ public class MainActivity extends BaseActivity {
                         viewPager.setCurrentItem(2);
                         return true;
                     case R.id.menu_chat:
+
                         viewPager.setCurrentItem(3);
                         return true;
                     case R.id.menu_project:
@@ -142,7 +155,7 @@ public class MainActivity extends BaseActivity {
     protected void onStart() {
         super.onStart();
         MenuItem item = navigation.getMenu().findItem(R.id.nav_logout);
-        if (LoginUtils.getInstance().isLogin()){
+        if (LoginUtils.getInstance().isLogin()) {
             LoginBean loginBean = LoginUtils.getInstance().getLoginBean(databaseHelper.findAll(LoginBean.class));
             textView.setText(loginBean.getUsername());
             avatar.setClickable(false);
@@ -202,5 +215,42 @@ public class MainActivity extends BaseActivity {
             dialog.setPositiveClickListener(() -> CacheUtils.clearAllCache(MainActivity.this));
         }
         dialog.show(getSupportFragmentManager(), "ExitConfirmDialog");
+    }
+
+    private void initToolbar() {
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.menu);
+        toolbar.setNavigationOnClickListener(v -> drawer.openDrawer(GravityCompat.START));
+    }
+
+    private void refreshMenu() {
+        supportInvalidateOptionsMenu();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_toolbar_home, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        int currentPager = viewPager.getCurrentItem();
+        if (currentPager == 0) {
+            menu.findItem(R.id.btn_search).setVisible(true);
+        } else {
+            menu.findItem(R.id.btn_search).setVisible(false);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.btn_search) {
+            SearchActivity.start(MainActivity.this);
+            return true;
+        }
+        return false;
+
     }
 }

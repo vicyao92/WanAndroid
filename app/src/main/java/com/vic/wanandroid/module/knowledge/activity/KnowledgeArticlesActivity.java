@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
@@ -14,6 +13,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 import com.vic.wanandroid.R;
 import com.vic.wanandroid.adapter.MyFragmentPagerAdapter;
+import com.vic.wanandroid.base.BaseActivity;
 import com.vic.wanandroid.module.knowledge.bean.KnowledgeSystemBean;
 import com.vic.wanandroid.module.knowledge.fragment.KnowledgeArticleFragment;
 import com.vic.wanandroid.utils.DatabaseHelper;
@@ -24,7 +24,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class KnowledgeArticlesActivity extends AppCompatActivity {
+public class KnowledgeArticlesActivity extends BaseActivity {
 
     @BindView(R.id.tab_knowledge_ariticle)
     TabLayout tabKnowledgeAriticle;

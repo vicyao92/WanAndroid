@@ -2,33 +2,28 @@ package com.vic.wanandroid.module.home.fragment;
 
 
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.vic.wanandroid.MainActivity;
 import com.vic.wanandroid.R;
 import com.vic.wanandroid.base.BaseFragment;
 import com.vic.wanandroid.base.WebActivity;
 import com.vic.wanandroid.http.BaseObserver;
 import com.vic.wanandroid.http.HttpManage;
-import com.vic.wanandroid.module.home.activity.SearchActivity;
 import com.vic.wanandroid.module.home.adapter.HomeAdapter;
 import com.vic.wanandroid.module.home.bean.ArticleBean;
 import com.vic.wanandroid.module.home.bean.BannerBean;
 import com.vic.wanandroid.module.home.bean.HomeBean;
 import com.vic.wanandroid.utils.DatabaseHelper;
 import com.vic.wanandroid.utils.GlideImageLoader;
+import com.vic.wanandroid.utils.SwipeRefreshUtils;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.Transformer;
@@ -41,8 +36,8 @@ import butterknife.BindView;
 public class HomeFragment extends BaseFragment {
     @BindView(R.id.article_list)
     RecyclerView rvArticles;
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
+    @BindView(R.id.srl_refresh)
+    SmartRefreshLayout srlRefresh;
     private List<ArticleBean> articleLists = new ArrayList<>();
     private List<BannerBean> bannerBeanList = new ArrayList<>();
     private List<String> bannerTitles = new ArrayList<>();
@@ -55,16 +50,21 @@ public class HomeFragment extends BaseFragment {
     private int currentPage = PAGE_START;
     private boolean isOver;
     private MainActivity activity;
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        setHasOptionsMenu(true);
         httpManage = HttpManage.init(getContext());
         databaseHelper = DatabaseHelper.init(getContext());
         activity = (MainActivity) getActivity();
-        initToolbar();
         initBannerSetting();
         initRv();
+        srlRefresh = SwipeRefreshUtils.initRefreshLayout(srlRefresh, getContext());
+        srlRefresh.setOnRefreshListener(refreshLayout -> {
+            currentPage = PAGE_START;
+            articleLists.clear();
+            loadDatas(currentPage);
+        });
         activity.createProgressBar(getActivity());
         activity.showProgressBar();
     }
@@ -122,24 +122,6 @@ public class HomeFragment extends BaseFragment {
         rvArticles.setAdapter(mAdapter);
     }
 
-    private void initToolbar() {
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setHomeAsUpIndicator(R.drawable.menu);
-            actionBar.setTitle(R.string.home);
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    DrawerLayout drawerLayout = getActivity().findViewById(R.id.drawer);
-                    drawerLayout.openDrawer(GravityCompat.START);
-                }
-            });
-            toolbar.inflateMenu(R.menu.menu_toolbar_home);
-        }
-    }
-
     private void loadBanner() {
         httpManage.getBanner(new BaseObserver<List<BannerBean>>(getContext()) {
             @Override
@@ -186,6 +168,7 @@ public class HomeFragment extends BaseFragment {
             public void onError(Throwable e) {
                 super.onError(e);
                 activity.hideProgressBar();
+                srlRefresh.finishRefresh(false);
             }
 
             @Override
@@ -200,6 +183,7 @@ public class HomeFragment extends BaseFragment {
                 currentPage += 1;
                 mAdapter.loadMoreComplete();
                 activity.hideProgressBar();
+                srlRefresh.finishRefresh(3000);
             }
         }, page);
     }
@@ -210,12 +194,4 @@ public class HomeFragment extends BaseFragment {
         activity.hideProgressBar();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.btn_search) {
-            SearchActivity.start(getContext());
-            return true;
-        }
-        return false;
-    }
 }

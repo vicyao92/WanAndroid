@@ -6,9 +6,6 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -32,18 +29,15 @@ import butterknife.BindView;
  * A simple {@link Fragment} subclass.
  */
 public class ChatFragment extends BaseFragment {
-
-
-    @BindView(R.id.tab_chat)
-    TabLayout tabChat;
     @BindView(R.id.vp_chat)
     ViewPager vpChat;
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
+    @BindView(R.id.tl_title)
+    TabLayout tabChat;
     private ChatArticlesFragment articlesFragment;
     private List<Fragment> fragments = new ArrayList<>();
     private List<AccountBean> accounts = new ArrayList<>();
     private MainActivity activity;
+
     public ChatFragment() {
     }
 
@@ -55,14 +49,12 @@ public class ChatFragment extends BaseFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
         httpManage = HttpManage.init(getContext());
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initToolbar();
         activity = (MainActivity) getActivity();
         activity.createProgressBar(getActivity());
         activity.showProgressBar();
@@ -102,17 +94,6 @@ public class ChatFragment extends BaseFragment {
             }
             vpChat.setAdapter(new MyFragmentPagerAdapter(getActivity().getSupportFragmentManager(), fragments));
             vpChat.setCurrentItem(0);
-        }
-    }
-
-    private void initToolbar() {
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setHomeAsUpIndicator(R.drawable.menu);
-            actionBar.setTitle(R.string.wechat);
-
         }
     }
 

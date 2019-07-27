@@ -7,16 +7,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.vic.wanandroid.MainActivity;
 import com.vic.wanandroid.R;
 import com.vic.wanandroid.base.BaseFragment;
@@ -39,10 +35,6 @@ public class KnowledgeChildFragment extends BaseFragment {
 
     @BindView(R.id.rv_knowledge_child)
     RecyclerView rvKnowledgeChild;
-    @BindView(R.id.refresh)
-    SmartRefreshLayout refresh;
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
     private List<KnowledgeSystemBean> knowledgeSystemBeanList = new ArrayList<>();
     private KnowledgeAdapter adapter;
     private MainActivity activity;
@@ -58,7 +50,6 @@ public class KnowledgeChildFragment extends BaseFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
         httpManage = HttpManage.init(getContext());
     }
 
@@ -71,7 +62,6 @@ public class KnowledgeChildFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initToolbar();
         initRv();
         activity = (MainActivity) getActivity();
         activity.createProgressBar(getActivity());
@@ -93,16 +83,6 @@ public class KnowledgeChildFragment extends BaseFragment {
                 activity.hideProgressBar();
             }
         });
-    }
-
-    private void initToolbar() {
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setHomeAsUpIndicator(R.drawable.menu);
-            actionBar.setTitle(R.string.knowledge);
-        }
     }
 
     private void initRv() {

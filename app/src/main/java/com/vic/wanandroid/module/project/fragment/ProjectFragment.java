@@ -1,14 +1,9 @@
 package com.vic.wanandroid.module.project.fragment;
 
 
-import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -28,15 +23,14 @@ import java.util.List;
 import butterknife.BindView;
 
 public class ProjectFragment extends BaseFragment {
-    @BindView(R.id.tab_project)
-    TabLayout tabProject;
     @BindView(R.id.vp_project)
     ViewPager vpProject;
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
+    @BindView(R.id.tl_title)
+    TabLayout tabProject;
     private ProjectArticlesFragment articlesFragment;
     private List<Fragment> fragments = new ArrayList<>();
     private List<ProjectChapter> projectChapters = new ArrayList<>();
+
     public ProjectFragment() {
     }
 
@@ -52,23 +46,6 @@ public class ProjectFragment extends BaseFragment {
                 initTab(projectChapters);
             }
         });
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        setHasOptionsMenu(true);
-        initToolbar();
-    }
-
-    private void initToolbar() {
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setHomeAsUpIndicator(R.drawable.menu);
-            actionBar.setTitle(R.string.project);
-        }
     }
 
     @Override
